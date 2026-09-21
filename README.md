@@ -12,7 +12,7 @@ This git checkout is **greenfield**. There is no firmware tree or GUI applicatio
 - Two NC micro switches in series on each end of all 3 axes (5V; which end was hit is inferred from motion direction at the strike)
 - USB laptop ↔ board (DLC32 WiFi unused)
 
-Desktop program on the laptop; language/UI toolkit still open. Full stack: Cursor project store `docs/project-context.md`.
+Desktop program on the laptop: **Python**, with **Tkinter as the starting UI default** (not a forever lock; Qt/WPF/etc. are not chosen). Full stack: Cursor project store `docs/project-context.md`.
 
 ## Agents
 
