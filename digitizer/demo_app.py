@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import sys
 import tkinter as tk
-from tkinter import ttk
 
 from digitizer.machine_config import default_envelope
 from digitizer.position import SimulatedPosition
@@ -50,7 +49,7 @@ def build_window(
     root = tk.Tk()
     root.title("DXF Preview — GRBL digitizer")
     root.minsize(560, 640)
-    root.geometry("640x760")
+    root.geometry("680x800")
 
     preview = DxfPreview(root, position_source=pos, session=session)
     preview.pack(fill="both", expand=True)
@@ -74,7 +73,16 @@ def build_window(
         row = tk.Frame(parent)
         row.pack(fill="x", pady=2)
         tk.Label(row, text=label, width=3, anchor="w").pack(side="left")
-        scale = ttk.Scale(row, from_=lo, to=hi, variable=var, command=lambda _v: _push())
+        scale = tk.Scale(
+            row,
+            from_=lo,
+            to=hi,
+            resolution=0.001,
+            orient="horizontal",
+            variable=var,
+            showvalue=0,
+            command=lambda _v: _push(),
+        )
         scale.pack(side="left", fill="x", expand=True, padx=6)
         readout = tk.Label(row, width=10, anchor="e")
         readout.pack(side="right")
@@ -113,10 +121,13 @@ def build_window(
     tk.Button(btns, text="Empty file", command=show_empty).pack(side="left")
     tk.Button(btns, text="Sample captures", command=show_sample).pack(side="left", padx=8)
     tk.Label(
-        btns,
+        sim,
         text="Settings (later): working dimensions, units, commanded vs moved. Not this slice.",
         fg="#9a3412",
-    ).pack(side="left", padx=8)
+        anchor="w",
+        justify="left",
+        wraplength=600,
+    ).pack(fill="x", pady=(6, 0))
 
     return root, preview, pos, session
 
