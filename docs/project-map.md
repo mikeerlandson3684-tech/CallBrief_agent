@@ -32,7 +32,9 @@ Only **organizer** and **verifier** exist now. Too many specialists is counterpr
 
 ## Authoritative specs (not in this git tree yet)
 
-Measurement intent and stylus offset math: Cursor project store `docs/probing-routines.md` (ID increases displayed motion; OD shrinks it). Do not generate probe cycles.
+Hardware (MKS DLC32 v2.1, TMC2209 V2.0 MKS, NEMA 17, 20T GT2, 3-pin NC probe, series NC limits per axis end, GRBL) and host path (USB laptop ↔ board; WiFi unused): Cursor project store `docs/project-context.md`. Do not invent a different board, probe, or limit scheme.
+
+Measurement intent and stylus offset math: Cursor project store `docs/probing-routines.md` (3-pin NC digital touch probe; ID increases displayed motion; OD shrinks it). Do not generate probe cycles or change offset math.
 
 When those specs are copied into this repo, add their paths here.
 
