@@ -45,14 +45,14 @@ class PreviewDemo(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("DXF Preview — simulated (no USB/GRBL)")
-        self.geometry("980x560")
-        self.minsize(820, 480)
+        self.geometry("1100x640")
+        self.minsize(960, 600)
         self.configure(bg="#eef2f6")
 
         self._envelope = PLACEHOLDER_WORK_ENVELOPE
         self._features: tuple[SessionFeature, ...] = ()
-        self._x = _float_var(2.0)
-        self._y = _float_var(2.0)
+        self._x = _float_var(5.0)
+        self._y = _float_var(4.0)
         self._z = _float_var(0.5)
         self._xmin = _float_var(self._envelope.x_min)
         self._xmax = _float_var(self._envelope.x_max)
@@ -96,30 +96,22 @@ class PreviewDemo(tk.Tk):
         ttk.Separator(left).pack(fill=tk.X, pady=10)
         tk.Label(
             left,
-            text="Working envelope (placeholder, not measured)",
+            text="Envelope placeholders (not measured)",
             bg="#eef2f6",
             font=("Segoe UI", 10, "bold"),
         ).pack(anchor=tk.W)
         env = tk.Frame(left, bg="#eef2f6")
         env.pack(fill=tk.X, pady=4)
         self._env_entries = []
-        for row, label, var in (
-            (0, "X min", self._xmin),
-            (1, "X max", self._xmax),
-            (2, "Y min", self._ymin),
-            (3, "Y max", self._ymax),
-            (4, "Z min", self._zmin),
-            (5, "Z max", self._zmax),
-            (6, "Grid step", self._grid),
-        ):
-            tk.Label(env, text=label, bg="#eef2f6", width=10, anchor=tk.W).grid(
-                row=row, column=0, sticky=tk.W, pady=1
-            )
-            entry = tk.Entry(env, textvariable=var, width=10)
-            entry.grid(row=row, column=1, sticky=tk.W)
-            entry.bind("<Return>", lambda _e: self._apply_envelope())
-            entry.bind("<FocusOut>", lambda _e: self._apply_envelope())
-            self._env_entries.append(entry)
+        pairs = (
+            (0, "X min", self._xmin, "X max", self._xmax),
+            (1, "Y min", self._ymin, "Y max", self._ymax),
+            (2, "Z min", self._zmin, "Z max", self._zmax),
+        )
+        for row, left_label, left_var, right_label, right_var in pairs:
+            self._env_field(env, row, 0, left_label, left_var)
+            self._env_field(env, row, 2, right_label, right_var)
+        self._env_field(env, 3, 0, "Grid step", self._grid)
         tk.Button(left, text="Apply envelope placeholders", command=self._apply_envelope).pack(
             anchor=tk.W, pady=(6, 0)
         )
@@ -132,13 +124,13 @@ class PreviewDemo(tk.Tk):
             font=("Segoe UI", 10, "bold"),
         ).pack(anchor=tk.W)
         tk.Button(left, text="Empty file", command=self.show_empty).pack(
-            anchor=tk.W, pady=2
+            anchor=tk.W, pady=2, fill=tk.X
         )
         tk.Button(
             left,
             text="Fake ID/OD + Z + origin",
             command=self.show_fake_features,
-        ).pack(anchor=tk.W, pady=2)
+        ).pack(anchor=tk.W, pady=2, fill=tk.X)
         tk.Label(
             left,
             text="ID/OD are center+diameter. Not a\nprobe walk. No rectangles.",
@@ -156,20 +148,40 @@ class PreviewDemo(tk.Tk):
         )
         self.preview.pack(fill=tk.BOTH, expand=True)
 
+    def _env_field(
+        self,
+        parent: tk.Misc,
+        row: int,
+        column: int,
+        label: str,
+        var: tk.DoubleVar,
+    ) -> None:
+        tk.Label(parent, text=label, bg="#eef2f6", width=9, anchor=tk.W).grid(
+            row=row, column=column, sticky=tk.W, pady=1, padx=(0, 4)
+        )
+        entry = tk.Entry(parent, textvariable=var, width=7)
+        entry.grid(row=row, column=column + 1, sticky=tk.W, padx=(0, 8))
+        entry.bind("<Return>", lambda _e: self._apply_envelope())
+        entry.bind("<FocusOut>", lambda _e: self._apply_envelope())
+        self._env_entries.append(entry)
+
     def _axis_slider(
         self, parent: tk.Misc, name: str, var: tk.DoubleVar
     ) -> tk.Scale:
         row = tk.Frame(parent, bg="#eef2f6")
         row.pack(fill=tk.X, pady=2)
         tk.Label(row, text=name, bg="#eef2f6", width=3, anchor=tk.W).pack(side=tk.LEFT)
+        e = self._envelope
+        limits = {"X": (e.x_min, e.x_max), "Y": (e.y_min, e.y_max), "Z": (e.z_min, e.z_max)}
+        lo, hi = limits[name]
         scale = tk.Scale(
             row,
             variable=var,
-            from_=0.0,
-            to=1.0,
+            from_=lo,
+            to=hi,
             resolution=0.05,
             orient=tk.HORIZONTAL,
-            length=220,
+            length=200,
             command=lambda _v: self._push(),
             bg="#eef2f6",
             highlightthickness=0,
@@ -357,9 +369,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def _run_screenshot(mode: str, path: Path) -> None:
+    app = PreviewDemo()
+    app.apply_mode(mode)
+    app.after(250, lambda: (grab_window_png(app, path), app.destroy()))
+    app.mainloop()
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    app = PreviewDemo()
     if args.screenshots_dir:
         dest = args.screenshots_dir
         dest.mkdir(parents=True, exist_ok=True)
@@ -369,26 +387,13 @@ def main(argv: list[str] | None = None) -> int:
             "zmin": dest / "preview_probe_zmin.png",
             "zmax": dest / "preview_probe_zmax.png",
         }
-
-        def _shot(remaining: list[str]) -> None:
-            if not remaining:
-                app.destroy()
-                return
-            mode = remaining[0]
-            app.apply_mode(mode)
-            app.update_idletasks()
-            app.update()
-            grab_window_png(app, mapping[mode])
-            app.after(80, lambda: _shot(remaining[1:]))
-
-        app.after(200, lambda: _shot(["empty", "features", "zmin", "zmax"]))
-        app.mainloop()
+        for mode, path in mapping.items():
+            _run_screenshot(mode, path)
         return 0
     if args.screenshot:
-        app.apply_mode(args.mode)
-        app.after(200, lambda: (grab_window_png(app, args.screenshot), app.destroy()))
-        app.mainloop()
+        _run_screenshot(args.mode, args.screenshot)
         return 0
+    app = PreviewDemo()
     app.apply_mode(args.mode)
     app.mainloop()
     return 0

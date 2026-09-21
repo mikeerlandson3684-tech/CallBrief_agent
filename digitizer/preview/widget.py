@@ -227,7 +227,7 @@ class PreviewCanvas(tk.Frame):
                 )
                 c.create_text(
                     circle.cx,
-                    circle.cy,
+                    circle.cy - circle.radius - 8,
                     text="ID",
                     fill=ID_COLOR,
                     font=("Segoe UI", 8, "bold"),
@@ -244,7 +244,7 @@ class PreviewCanvas(tk.Frame):
                 )
                 c.create_text(
                     circle.cx,
-                    circle.cy,
+                    circle.cy - circle.radius - 8,
                     text="OD",
                     fill=OD_COLOR,
                     font=("Segoe UI", 8, "bold"),
