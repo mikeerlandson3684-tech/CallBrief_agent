@@ -1,0 +1,10 @@
+[project]
+name = "grbl-digitizer"
+version = "0.1.0"
+description = "Probe-only GRBL digitizer (Python / Tkinter starting default)"
+requires-python = ">=3.11"
+readme = "README.md"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
