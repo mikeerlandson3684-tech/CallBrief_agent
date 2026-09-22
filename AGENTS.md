@@ -2,18 +2,19 @@
 
 How Cursor agents work on this GRBL digitizing repo.
 
-Too many specialists is counterproductive; **only organizer + verifier exist now.**
+Too many specialists is counterproductive; **only organizer + verifier + debugger exist now.**
 
 ## Custom agents
 
 | Agent | File | Role |
 | --- | --- | --- |
 | Repository Organizer | [`.cursor/agents/repository-organizer.md`](.cursor/agents/repository-organizer.md) | Inspect layout, classify work, plan small tasks, keep maps/README/`AGENTS.md` current, prevent overlapping edits |
+| Debugging specialist | [`.cursor/agents/debugging-specialist.md`](.cursor/agents/debugging-specialist.md) | Integration bugs (GUI + GRBL/USB + preview + files): reproduce/isolate, report the cause, then repair |
 | Verification specialist | [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md) | After changes: run tests, check docs, Git status, report gaps |
 
-Main Cursor chat → **Repository Organizer** → (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
+Main Cursor chat → **Repository Organizer** → **Debugging specialist**, (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
 
-Do not add GUI, firmware, or documentation specialist files until there is a distinct, recurring need. Invoke with `/repository-organizer` or `/verification-specialist`, or by asking in natural language. Descriptions are written so Agent can auto-delegate.
+Do not add GUI, firmware, or documentation specialist files until there is a distinct, recurring need. Invoke with `/repository-organizer`, `/debugging-specialist`, or `/verification-specialist`, or by asking in natural language. Descriptions are written so Agent can auto-delegate.
 
 ## Approval gates (Mike)
 

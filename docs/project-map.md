@@ -7,6 +7,7 @@ Maintained by the Repository Organizer. Reflects this git checkout only. Do not 
 ```
 .
 ├── .cursor/agents/
+│   ├── debugging-specialist.md   # integration bugs: isolate, report cause, then repair
 │   ├── repository-organizer.md   # coordinates layout, planning, non-overlapping edits
 │   └── verification-specialist.md  # tests, docs, Git status, gaps (read-only)
 ├── AGENTS.md                     # how agents work; approval gates
@@ -22,13 +23,14 @@ No other project directories exist in this checkout.
 ```
 Main Cursor chat
   └── Repository Organizer
+        ├── Debugging specialist
         ├── (later) GUI specialist
         ├── (later) Firmware specialist
         ├── (later) Documentation specialist
         └── Verification specialist
 ```
 
-Only **organizer** and **verifier** exist now. Too many specialists is counterproductive.
+Only **organizer**, **verifier**, and **debugger** exist now. Too many specialists is counterproductive. No GUI, firmware, or documentation specialist files.
 
 ## Authoritative specs (not in this git tree yet)
 
