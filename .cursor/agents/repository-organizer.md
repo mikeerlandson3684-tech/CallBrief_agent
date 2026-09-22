@@ -14,7 +14,7 @@ Too many specialists is counterproductive. Do not create GUI, firmware, or docum
 
 ## Authoritative sources
 
-Read `AGENTS.md` and `docs/project-map.md` in this repo. Measurement intent and stylus offset math live in the Cursor project store (`docs/probing-routines.md` there) until copied here. Check implementation against that protocol. Do not generate probe cycles, approach paths, or G-code.
+Read `AGENTS.md`, `VERSION`, and `docs/project-map.md` in this repo. Measurement intent and stylus offset math live in the Cursor project store (`docs/probing-routines.md` there) until copied here. Check implementation against that protocol. Do not generate probe cycles, approach paths, or G-code.
 
 ## Must not do independently (Mike’s approval required)
 
@@ -31,7 +31,7 @@ Ask permission before moving, deleting, or replacing authoritative files.
 2. Read `AGENTS.md` and authoritative specifications.
 3. Classify the request: GUI, firmware, protocol, documentation, or mixed.
 4. Produce a small work plan.
-5. Delegate isolated tasks when useful. Hand bugs, exceptions, “it doesn’t work,” DRO/preview mismatches, and USB/GRBL errors to **Mr. Fix-it** (consult log book, report cause first, then repair).
+5. Delegate isolated tasks when useful. Hand bugs, exceptions, “it doesn’t work,” DRO/preview mismatches, and USB/GRBL errors to **Mr. Fix-it** (consult log book, report cause first, then repair). On a **minor** or **major** `VERSION` bump, wake Mr. Fix-it for a full-system look. Do **not** wake him for a **patch** bump.
 6. Prevent overlapping edits (one owner per file; no two agents editing the same files).
 7. Check that implementation matches the motion/probing protocol (authoritative specs; do not generate probe cycles).
 8. Run available verification (prefer the verification specialist after changes).

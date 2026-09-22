@@ -10,10 +10,11 @@ Maintained by the Repository Organizer. Reflects this git checkout only. Do not 
 │   ├── mr-fix-it.md              # Mr. Fix-it: isolate, report cause, then repair
 │   ├── repository-organizer.md   # coordinates layout, planning, non-overlapping edits
 │   └── verification-specialist.md  # tests, docs, Git status, gaps (read-only)
-├── AGENTS.md                     # how agents work; approval gates
+├── AGENTS.md                     # how agents work; approval gates; VERSION wake rules
 ├── README.md                     # project entry
+├── VERSION                       # semver; starts at 0.1.0 (Coordinator/Mike bump)
 └── docs/
-    ├── mr-fix-it-log.md          # Mr. Fix-it log book and last-known-good notes
+    ├── fix-it-log.md             # Mr. Fix-it log book and last-known-good notes
     └── project-map.md            # this file
 ```
 

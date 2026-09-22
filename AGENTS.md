@@ -9,14 +9,26 @@ Too many specialists is counterproductive; **only organizer + verifier + Mr. Fix
 | Agent | File | Role |
 | --- | --- | --- |
 | Repository Organizer | [`.cursor/agents/repository-organizer.md`](.cursor/agents/repository-organizer.md) | Inspect layout, classify work, plan small tasks, keep maps/README/`AGENTS.md` current, prevent overlapping edits |
-| Mr. Fix-it | [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md) | Integration bugs (GUI + GRBL/USB + preview + files): consult log book, find, report the cause, then repair. Invoke `/mr-fix-it` |
+| Mr. Fix-it | [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md) | Integration bugs (GUI + GRBL/USB + preview + files): consult log book, isolate, report the cause, then repair. Invoke `/mr-fix-it` or ask for Mr. Fix-it |
 | Verification specialist | [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md) | After changes: run tests, check docs, Git status, report gaps |
 
 Main Cursor chat → **Repository Organizer** → **Mr. Fix-it**, (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
 
 Do not add GUI, firmware, or documentation specialist files until there is a distinct, recurring need. Invoke with `/repository-organizer`, `/mr-fix-it`, or `/verification-specialist`, or by asking in natural language. Descriptions are written so Agent can auto-delegate.
 
-Mr. Fix-it must read [`docs/mr-fix-it-log.md`](docs/mr-fix-it-log.md) (and the store copy) before guessing. Checkpoints are last-known-good notes and git refs/tags — not a license to rewrite history or force-push.
+Mr. Fix-it owns [`docs/fix-it-log.md`](docs/fix-it-log.md) (and the store copy). He must read it before guessing. Checkpoints are last-known-good notes and git tags at minor/major [`VERSION`](VERSION) values — not a license to rewrite history or force-push.
+
+## Version and when to wake Mr. Fix-it
+
+Current version: [`VERSION`](VERSION) (starts at **0.1.0**). **Coordinator or Mike decide the bump.** Mr. Fix-it does not bump `VERSION`.
+
+| Bump | Example | Wake Mr. Fix-it? |
+| --- | --- | --- |
+| **Patch** (`x.y.Z` → `x.y.Z+1`) | 13.2.1 → 13.2.2 | **Do not** wake him for a full-system look |
+| **Minor** (`x.Y.z` → `x.Y+1.0`) | 13.2.x → 13.3.0 | **Do** turn him loose on the whole system |
+| **Major** (`X.y.z` → `X+1.0.0`) | → 14.0.0 | **Definitely** a full-system look |
+
+On minor/major, tag or log a checkpoint (`vMAJOR.MINOR.PATCH`) so he can compare last-good vs now. Bugs, exceptions, and “it doesn’t work” still go to Mr. Fix-it even between bumps.
 
 ## Approval gates (Mike)
 
