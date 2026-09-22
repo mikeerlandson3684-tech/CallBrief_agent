@@ -18,15 +18,13 @@ Do not add GUI, firmware, or documentation specialist files until there is a dis
 
 Mr. Fix-it owns [`docs/fix-it-log.md`](docs/fix-it-log.md) (and the store copy). He must read it before guessing. Checkpoints are last-known-good notes and git tags at minor/major [`VERSION`](VERSION) values — not a license to rewrite history or force-push.
 
-## Version and when to wake Mr. Fix-it
+## Wake Mr. Fix-it on the whole system
 
-Current version: [`VERSION`](VERSION) (starts at **0.1.0**). **Coordinator or Mike decide the bump.** Mr. Fix-it does not bump `VERSION`.
+Current version: [`VERSION`](VERSION) (starts at **0.1.0**). **Mike or the Project coordinator decide the bump.** Mr. Fix-it does not bump `VERSION`. He runs version-sweeps on **minor and major only**.
 
-| Bump | Example | Wake Mr. Fix-it? |
-| --- | --- | --- |
-| **Patch** (`x.y.Z` → `x.y.Z+1`) | 13.2.1 → 13.2.2 | **Do not** wake him for a full-system look |
-| **Minor** (`x.Y.z` → `x.Y+1.0`) | 13.2.x → 13.3.0 | **Do** turn him loose on the whole system |
-| **Major** (`X.y.z` → `X+1.0.0`) | → 14.0.0 | **Definitely** a full-system look |
+- **Patch** (e.g. 13.2.1 → 13.2.2): do **not** wake him.
+- **Minor** (e.g. 13.2.x → 13.3.0): **do** turn him loose on the whole system.
+- **Major** (e.g. → 14.0.0): **definitely**.
 
 On minor/major, tag or log a checkpoint (`vMAJOR.MINOR.PATCH`) so he can compare last-good vs now. Bugs, exceptions, and “it doesn’t work” still go to Mr. Fix-it even between bumps.
 

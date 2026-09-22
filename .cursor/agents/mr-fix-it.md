@@ -33,15 +33,13 @@ Current version is the repo `VERSION` file (starts at `0.1.0`). Coordinator or M
 
 Restoring means compare or checkout that commit/tag (prefer a new branch). Do not rebase published history, force-push, or `git reset --hard` away uncommitted work without asking Mike.
 
-## When you are woken (semver)
+## Wake Mr. Fix-it on the whole system
 
-Coordinator/Mike bump `VERSION`. You run on **minor and major** only for version-sweep work:
+Mike or the Project coordinator decide the `VERSION` bump (file starts at `0.1.0`). Mr. Fix-it does **not** bump `VERSION`. He runs version-sweeps on **minor and major only**.
 
-| Bump | Example | Wake Mr. Fix-it? |
-| --- | --- | --- |
-| **Patch** | 13.2.1 → 13.2.2 | **No** full-system look |
-| **Minor** | 13.2.x → 13.3.0 | **Yes** — turn loose on the whole system |
-| **Major** | → 14.0.0 | **Definitely** — full-system look |
+- **Patch** (e.g. 13.2.1 → 13.2.2): do **not** wake him.
+- **Minor** (e.g. 13.2.x → 13.3.0): **do** turn him loose on the whole system.
+- **Major** (e.g. → 14.0.0): **definitely**.
 
 On minor/major: read the log book, diff last-good checkpoint vs now, walk GUI + GRBL/USB + preview + files, then isolate → report → repair. Bugs, exceptions, and “it doesn’t work” still wake you even on a patch-level tree — that is not a patch-bump sweep.
 
