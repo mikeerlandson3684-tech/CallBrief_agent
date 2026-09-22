@@ -2,19 +2,21 @@
 
 How Cursor agents work on this GRBL digitizing repo.
 
-Too many specialists is counterproductive; **only organizer + verifier + debugger exist now.**
+Too many specialists is counterproductive; **only organizer + verifier + Mr. Fix-it exist now.**
 
 ## Custom agents
 
 | Agent | File | Role |
 | --- | --- | --- |
 | Repository Organizer | [`.cursor/agents/repository-organizer.md`](.cursor/agents/repository-organizer.md) | Inspect layout, classify work, plan small tasks, keep maps/README/`AGENTS.md` current, prevent overlapping edits |
-| Debugging specialist | [`.cursor/agents/debugging-specialist.md`](.cursor/agents/debugging-specialist.md) | Integration bugs (GUI + GRBL/USB + preview + files): reproduce/isolate, report the cause, then repair |
+| Mr. Fix-it | [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md) | Integration bugs (GUI + GRBL/USB + preview + files): consult log book, find, report the cause, then repair. Invoke `/mr-fix-it` |
 | Verification specialist | [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md) | After changes: run tests, check docs, Git status, report gaps |
 
-Main Cursor chat → **Repository Organizer** → **Debugging specialist**, (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
+Main Cursor chat → **Repository Organizer** → **Mr. Fix-it**, (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
 
-Do not add GUI, firmware, or documentation specialist files until there is a distinct, recurring need. Invoke with `/repository-organizer`, `/debugging-specialist`, or `/verification-specialist`, or by asking in natural language. Descriptions are written so Agent can auto-delegate.
+Do not add GUI, firmware, or documentation specialist files until there is a distinct, recurring need. Invoke with `/repository-organizer`, `/mr-fix-it`, or `/verification-specialist`, or by asking in natural language. Descriptions are written so Agent can auto-delegate.
+
+Mr. Fix-it must read [`docs/mr-fix-it-log.md`](docs/mr-fix-it-log.md) (and the store copy) before guessing. Checkpoints are last-known-good notes and git refs/tags — not a license to rewrite history or force-push.
 
 ## Approval gates (Mike)
 

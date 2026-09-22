@@ -18,10 +18,10 @@ Desktop program on the laptop: **Python**, with **Tkinter as the starting UI def
 
 How agents work on this repo: [`AGENTS.md`](AGENTS.md)
 
-Custom agents (organizer + verifier + debugger only):
+Custom agents (organizer + verifier + Mr. Fix-it only):
 
 - [`.cursor/agents/repository-organizer.md`](.cursor/agents/repository-organizer.md)
-- [`.cursor/agents/debugging-specialist.md`](.cursor/agents/debugging-specialist.md)
+- [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md)
 - [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md)
 
 Current layout: [`docs/project-map.md`](docs/project-map.md)

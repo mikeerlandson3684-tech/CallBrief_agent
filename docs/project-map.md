@@ -7,12 +7,13 @@ Maintained by the Repository Organizer. Reflects this git checkout only. Do not 
 ```
 .
 ├── .cursor/agents/
-│   ├── debugging-specialist.md   # integration bugs: isolate, report cause, then repair
+│   ├── mr-fix-it.md              # Mr. Fix-it: isolate, report cause, then repair
 │   ├── repository-organizer.md   # coordinates layout, planning, non-overlapping edits
 │   └── verification-specialist.md  # tests, docs, Git status, gaps (read-only)
 ├── AGENTS.md                     # how agents work; approval gates
 ├── README.md                     # project entry
 └── docs/
+    ├── mr-fix-it-log.md          # Mr. Fix-it log book and last-known-good notes
     └── project-map.md            # this file
 ```
 
@@ -23,14 +24,14 @@ No other project directories exist in this checkout.
 ```
 Main Cursor chat
   └── Repository Organizer
-        ├── Debugging specialist
+        ├── Mr. Fix-it
         ├── (later) GUI specialist
         ├── (later) Firmware specialist
         ├── (later) Documentation specialist
         └── Verification specialist
 ```
 
-Only **organizer**, **verifier**, and **debugger** exist now. Too many specialists is counterproductive. No GUI, firmware, or documentation specialist files.
+Only **organizer**, **verifier**, and **Mr. Fix-it** exist now. Too many specialists is counterproductive. No GUI, firmware, or documentation specialist files.
 
 ## Authoritative specs (not in this git tree yet)
 
