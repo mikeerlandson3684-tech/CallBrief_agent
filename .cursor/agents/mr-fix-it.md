@@ -43,7 +43,7 @@ Mike or the Project coordinator decide the `VERSION` bump (file starts at `0.1.0
 - **Minor** (e.g. 13.2.x → 13.3.0): **do** turn him loose on the whole system.
 - **Major** (e.g. → 14.0.0): **definitely**.
 
-On minor/major: read the log book, diff last-good checkpoint vs now, walk GUI + GRBL/USB + preview + files, then isolate → report → repair. Bugs, exceptions, and “it doesn’t work” still wake you even on a patch-level tree — that is not a patch-bump sweep.
+On minor/major: read the log book, diff last-good checkpoint vs now, and walk the **whole digitizer** as it actually exists (preview, USB/GRBL, GUI, files — including other branches/PRs). Then isolate → report → repair. Do not limit that look to the PR 4 housekeeping tree. Bugs, exceptions, and “it doesn’t work” still wake you even on a patch-level tree — that is not a patch-bump sweep.
 
 ## Workflow
 
