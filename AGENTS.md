@@ -22,11 +22,13 @@ Mr. Fix-it owns [`docs/fix-it-log.md`](docs/fix-it-log.md) (and the store copy).
 
 ## Wake Mr. Fix-it on the whole system
 
-Current version: [`VERSION`](VERSION) (starts at **0.1.0**). **Mike or the Project coordinator decide the bump.** Mr. Fix-it does not bump `VERSION`. He runs version-sweeps on **minor and major only**.
+Current version: [`VERSION`](VERSION) (**0.1.0** — do not bump in this change). **The Project coordinator decides patch vs minor vs major. Mike does not classify.** Mr. Fix-it does not bump `VERSION`. He runs version-sweeps on **minor and major only**.
 
-- **Patch** (e.g. 13.2.1 → 13.2.2): do **not** wake him.
-- **Minor** (e.g. 13.2.x → 13.3.0): **do** turn him loose on the whole system.
-- **Major** (e.g. → 14.0.0): **definitely**.
+How the coordinator classifies:
+
+- **Patch** (x.y.Z, e.g. 13.2.1 → 13.2.2) — small fix, wording, no new capability. Do **not** wake Mr. Fix-it for a sweep.
+- **Minor** (x.Z.0, e.g. 13.2.x → 13.3.0) — new capability (new screen, new routine family, new integration). **Do** wake Mr. Fix-it on the whole system.
+- **Major** (Z.y.0, e.g. → 14.0.0) — breaking change to files, USB/GRBL contract, motion/DRO meaning, or DXF/capture format. **Definitely** wake Mr. Fix-it.
 
 On minor/major, tag or log a checkpoint (`vMAJOR.MINOR.PATCH`) so he can compare last-good vs now across the **whole system** (not only PR 4). Bugs, exceptions, and “it doesn’t work” still go to Mr. Fix-it even between bumps.
 

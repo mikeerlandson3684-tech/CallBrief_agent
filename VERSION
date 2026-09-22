@@ -1,1 +1,3 @@
 0.1.0
+# Coordinator classifies patch vs minor vs major. Mike does not classify.
+# Do not bump without the coordinator. Mr. Fix-it does not bump this file.

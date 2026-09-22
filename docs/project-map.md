@@ -12,7 +12,7 @@ Maintained by the Repository Organizer. Reflects this git checkout only. Do not 
 │   └── verification-specialist.md  # tests, docs, Git status, gaps (read-only)
 ├── AGENTS.md                     # how agents work; approval gates; VERSION wake rules
 ├── README.md                     # project entry
-├── VERSION                       # semver; starts at 0.1.0 (Coordinator/Mike bump)
+├── VERSION                       # semver; stays 0.1.0 until coordinator classifies/bumps
 └── docs/
     ├── fix-it-log.md             # Mr. Fix-it log book and last-known-good notes
     └── project-map.md            # this file

@@ -25,7 +25,7 @@ Record: when it last worked, when it broke, what changed (VERSION, git ref, file
 
 Checkpoints are dated log entries and git tags at **minor** and **major** VERSION values so you can compare last-good vs now. They are **not** a license to rewrite history or force-push.
 
-Current version is the repo `VERSION` file (starts at `0.1.0`). Coordinator or Mike decide the bump — you do not bump `VERSION` yourself.
+Current version is the repo `VERSION` file (stays `0.1.0` until the coordinator bumps it). **The Project coordinator decides patch vs minor vs major. Mike does not classify.** You do not bump `VERSION` yourself.
 
 **When a slice is working** (verifier agrees, or Mike confirms), or after a minor/major bump that still holds together:
 
@@ -37,11 +37,13 @@ Restoring means compare or checkout that commit/tag (prefer a new branch). Do no
 
 ## Wake Mr. Fix-it on the whole system
 
-Mike or the Project coordinator decide the `VERSION` bump (file starts at `0.1.0`). Mr. Fix-it does **not** bump `VERSION`. He runs version-sweeps on **minor and major only**.
+**The Project coordinator decides patch vs minor vs major. Mike does not classify.** `VERSION` stays `0.1.0` until the coordinator bumps it. Mr. Fix-it does **not** bump `VERSION`. He runs version-sweeps on **minor and major only**.
 
-- **Patch** (e.g. 13.2.1 → 13.2.2): do **not** wake him.
-- **Minor** (e.g. 13.2.x → 13.3.0): **do** turn him loose on the whole system.
-- **Major** (e.g. → 14.0.0): **definitely**.
+How the coordinator classifies:
+
+- **Patch** (x.y.Z, e.g. 13.2.1 → 13.2.2) — small fix, wording, no new capability. Do **not** wake him for a sweep.
+- **Minor** (x.Z.0, e.g. 13.2.x → 13.3.0) — new capability (new screen, new routine family, new integration). **Do** turn him loose on the whole system.
+- **Major** (Z.y.0, e.g. → 14.0.0) — breaking change to files, USB/GRBL contract, motion/DRO meaning, or DXF/capture format. **Definitely**.
 
 On minor/major: read the log book, diff last-good checkpoint vs now, and walk the **whole digitizer** as it actually exists (preview, USB/GRBL, GUI, files — including other branches/PRs). Then isolate → report → repair. Do not limit that look to the PR 4 housekeeping tree. Bugs, exceptions, and “it doesn’t work” still wake you even on a patch-level tree — that is not a patch-bump sweep.
 
