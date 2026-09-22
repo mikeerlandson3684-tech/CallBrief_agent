@@ -9,7 +9,7 @@ Too many specialists is counterproductive; **only organizer + verifier + Mr. Fix
 | Agent | File | Role |
 | --- | --- | --- |
 | Repository Organizer | [`.cursor/agents/repository-organizer.md`](.cursor/agents/repository-organizer.md) | Inspect layout, classify work, plan small tasks, keep maps/README/`AGENTS.md` current, prevent overlapping edits |
-| Mr. Fix-it | [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md) | Integration bugs (GUI + GRBL/USB + preview + files): consult log book, isolate, report the cause, then repair. Invoke `/mr-fix-it` or ask for Mr. Fix-it |
+| Mr. Fix-it | [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md) | Whole-system integration (preview, USB/GRBL, GUI, files). PR 4 only stores this instruction file. Invoke `/mr-fix-it` or ask for Mr. Fix-it |
 | Verification specialist | [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md) | After changes: run tests, check docs, Git status, report gaps |
 
 Main Cursor chat → **Repository Organizer** → **Mr. Fix-it**, (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
@@ -17,6 +17,8 @@ Main Cursor chat → **Repository Organizer** → **Mr. Fix-it**, (later) GUI / 
 Do not add GUI, firmware, or documentation specialist files until there is a distinct, recurring need. Invoke with `/repository-organizer`, `/mr-fix-it`, or `/verification-specialist`, or by asking in natural language. Descriptions are written so Agent can auto-delegate.
 
 Mr. Fix-it owns [`docs/fix-it-log.md`](docs/fix-it-log.md) (and the store copy). He must read it before guessing. Checkpoints are last-known-good notes and git tags at minor/major [`VERSION`](VERSION) values — not a license to rewrite history or force-push.
+
+**PR 4 only stores Mr. Fix-it’s instruction file** (`.cursor/agents/mr-fix-it.md`). His **scope is the whole digitizer system** (preview, USB/GRBL, GUI, files, integration), not this housekeeping PR. When woken, he inspects whatever is actually in play, including product code on other branches/PRs such as the preview.
 
 ## Wake Mr. Fix-it on the whole system
 
@@ -26,7 +28,7 @@ Current version: [`VERSION`](VERSION) (starts at **0.1.0**). **Mike or the Proje
 - **Minor** (e.g. 13.2.x → 13.3.0): **do** turn him loose on the whole system.
 - **Major** (e.g. → 14.0.0): **definitely**.
 
-On minor/major, tag or log a checkpoint (`vMAJOR.MINOR.PATCH`) so he can compare last-good vs now. Bugs, exceptions, and “it doesn’t work” still go to Mr. Fix-it even between bumps.
+On minor/major, tag or log a checkpoint (`vMAJOR.MINOR.PATCH`) so he can compare last-good vs now across the **whole system** (not only PR 4). Bugs, exceptions, and “it doesn’t work” still go to Mr. Fix-it even between bumps.
 
 ## Approval gates (Mike)
 
