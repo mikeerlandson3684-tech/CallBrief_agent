@@ -122,7 +122,7 @@ class MainWindow(tk.Tk):
         self._build_toolbar()
 
         cols = tk.Frame(self, bg=T.PAGE_BG)
-        cols.grid(row=2, column=0, sticky="nsew", padx=10, pady=(0, 10))
+        cols.grid(row=2, column=0, sticky="nsew", padx=10, pady=(0, 6))
         cols.columnconfigure(0, weight=0, minsize=260)
         cols.columnconfigure(1, weight=1, minsize=380)
         cols.columnconfigure(2, weight=1, minsize=380)
@@ -140,6 +140,7 @@ class MainWindow(tk.Tk):
         self._build_left(left)
         self._build_center(center)
         self._build_right(right)
+        self._build_sim_bar()
 
     def _build_tabs(self) -> None:
         bar = tk.Frame(self, bg=T.PAGE_BG)
@@ -438,13 +439,10 @@ class MainWindow(tk.Tk):
 
     def _build_right(self, parent: tk.Frame) -> None:
         parent.rowconfigure(0, weight=1)
+        parent.columnconfigure(0, weight=1)
 
         preview_card = TealCard(parent, "DXF Preview", logger=self.log)
         preview_card.grid(row=0, column=0, sticky="nsew", pady=(0, 8))
-        preview_card.body.pack_propagate(False)
-        preview_card.rowconfigure(0, weight=1)
-        preview_card.body.columnconfigure(0, weight=1)
-        preview_card.body.rowconfigure(0, weight=1)
 
         self.preview = DxfPreview(
             preview_card.body,
@@ -454,70 +452,6 @@ class MainWindow(tk.Tk):
         )
         self.preview.pack(fill="both", expand=True)
         self._remember("DXF Preview", preview_card)
-
-        sim = tk.Frame(preview_card.body, bg=T.CARD_BG)
-        sim.pack(fill="x", pady=(4, 0))
-        tk.Label(
-            sim,
-            text="Simulated position (not GRBL, not USB — stub until DRO / '?' is wired)",
-            bg=T.CARD_BG,
-            fg=T.MUTED_FG,
-            font=T.FONT_SMALL,
-            wraplength=420,
-            justify="left",
-            anchor="w",
-        ).pack(fill="x")
-        self._x_var = tk.DoubleVar(value=self.position.get_xyz()[0])
-        self._y_var = tk.DoubleVar(value=self.position.get_xyz()[1])
-        self._z_var = tk.DoubleVar(value=self.position.get_xyz()[2])
-
-        def _push(_event: object | None = None) -> None:
-            self.position.set_xyz(self._x_var.get(), self._y_var.get(), self._z_var.get())
-
-        def _axis(label: str, var: tk.DoubleVar, lo: float, hi: float) -> None:
-            row = tk.Frame(sim, bg=T.CARD_BG)
-            row.pack(fill="x")
-            tk.Label(row, text=label, width=2, anchor="w", bg=T.CARD_BG, font=T.FONT_SMALL).pack(side="left")
-            scale = tk.Scale(
-                row,
-                from_=lo,
-                to=hi,
-                resolution=0.001,
-                orient="horizontal",
-                variable=var,
-                showvalue=0,
-                bg=T.CARD_BG,
-                highlightthickness=0,
-                length=180,
-                command=lambda _v: _push(),
-            )
-            scale.pack(side="left", fill="x", expand=True, padx=4)
-            tk.Label(row, textvariable=var, width=8, anchor="e", bg=T.CARD_BG, font=T.FONT_SMALL).pack(side="right")
-
-        _axis("X", self._x_var, self.env.x_min, self.env.x_max)
-        _axis("Y", self._y_var, self.env.y_min, self.env.y_max)
-        _axis("Z", self._z_var, self.env.z_min, self.env.z_max)
-
-        sim_btns = tk.Frame(sim, bg=T.CARD_BG)
-        sim_btns.pack(fill="x", pady=(4, 0))
-
-        def show_empty() -> None:
-            self.session.clear()
-            self.preview.set_session(self.session)
-
-        def show_sample() -> None:
-            filled = sample_session()
-            self.session.circles = filled.circles
-            self.session.z_heights = filled.z_heights
-            self.session.dxf_origin = filled.dxf_origin
-            self.preview.set_session(self.session)
-
-        empty = PillButton(sim_btns, "Empty file", self.log, command=show_empty)
-        empty.pack(side="left")
-        sample = PillButton(sim_btns, "Sample captures", self.log, command=show_sample)
-        sample.pack(side="left", padx=8)
-        self._remember("Empty file", empty)
-        self._remember("Sample captures", sample)
 
         finish = PillButton(parent, "FINISH PROBING", self.log, pady=8)
         finish.grid(row=1, column=0, sticky="ew", pady=(0, 6))
@@ -532,8 +466,65 @@ class MainWindow(tk.Tk):
         self.messages = MessageLog(msg_card.body)
         self.messages.pack(fill="both", expand=True)
         self.messages.append("Paralyzed GUI — clicks log here. No GRBL, USB, motion, or file I/O.")
-        # MessageLog header already logs; the Text is the transcript.
         self._remember("Messages", self.messages)
+
+    def _build_sim_bar(self) -> None:
+        """Live SimulatedPosition sliders so the preview Z-circle/grid stay alive."""
+        bar = tk.Frame(self, bg=T.CARD_BG, highlightbackground=T.BORDER, highlightthickness=1)
+        bar.grid(row=3, column=0, sticky="ew", padx=10, pady=(0, 10))
+        tk.Label(
+            bar,
+            text="Simulated position (not GRBL, not USB)",
+            bg=T.CARD_BG,
+            fg=T.MUTED_FG,
+            font=T.FONT_SMALL,
+        ).pack(side="left", padx=(8, 10))
+
+        self._x_var = tk.DoubleVar(value=self.position.get_xyz()[0])
+        self._y_var = tk.DoubleVar(value=self.position.get_xyz()[1])
+        self._z_var = tk.DoubleVar(value=self.position.get_xyz()[2])
+
+        def _push(_event: object | None = None) -> None:
+            self.position.set_xyz(self._x_var.get(), self._y_var.get(), self._z_var.get())
+
+        def _axis(label: str, var: tk.DoubleVar, lo: float, hi: float) -> None:
+            tk.Label(bar, text=label, bg=T.CARD_BG, font=T.FONT_SMALL).pack(side="left")
+            scale = tk.Scale(
+                bar,
+                from_=lo,
+                to=hi,
+                resolution=0.001,
+                orient="horizontal",
+                variable=var,
+                showvalue=0,
+                bg=T.CARD_BG,
+                highlightthickness=0,
+                length=140,
+                command=lambda _v: _push(),
+            )
+            scale.pack(side="left", padx=(2, 8))
+
+        _axis("X", self._x_var, self.env.x_min, self.env.x_max)
+        _axis("Y", self._y_var, self.env.y_min, self.env.y_max)
+        _axis("Z", self._z_var, self.env.z_min, self.env.z_max)
+
+        def show_empty() -> None:
+            self.session.clear()
+            self.preview.set_session(self.session)
+
+        def show_sample() -> None:
+            filled = sample_session()
+            self.session.circles = filled.circles
+            self.session.z_heights = filled.z_heights
+            self.session.dxf_origin = filled.dxf_origin
+            self.preview.set_session(self.session)
+
+        empty = PillButton(bar, "Empty file", self.log, command=show_empty)
+        empty.pack(side="left", padx=(8, 0))
+        sample = PillButton(bar, "Sample captures", self.log, command=show_sample)
+        sample.pack(side="left", padx=8)
+        self._remember("Empty file", empty)
+        self._remember("Sample captures", sample)
 
     def _poll_dro(self) -> None:
         self._refresh_dro()

@@ -197,7 +197,7 @@ class MessageLog(tk.Frame):
         wrap.pack(fill="both", expand=True)
         self.text = tk.Text(
             wrap,
-            height=8,
+            height=6,
             wrap="word",
             bg=T.MSG_BG,
             fg=T.LABEL_FG,

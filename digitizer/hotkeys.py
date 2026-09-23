@@ -48,8 +48,8 @@ class HotkeysWindow(tk.Toplevel):
         super().__init__(master)
         self.title("Hotkeys")
         self.configure(bg=T.PAGE_BG)
-        self.geometry("520x560")
-        self.minsize(420, 400)
+        self.geometry("720x520")
+        self.minsize(560, 420)
         self.logger = logger
         self.bind_boxes: dict[str, tk.Entry] = {}
 
@@ -63,7 +63,7 @@ class HotkeysWindow(tk.Toplevel):
             bg=T.CARD_BG,
             fg=T.MUTED_FG,
             font=T.FONT_SMALL,
-            wraplength=460,
+            wraplength=660,
             justify="left",
             anchor="w",
         ).pack(fill="x", pady=(0, 8))
@@ -71,8 +71,12 @@ class HotkeysWindow(tk.Toplevel):
         grid = tk.Frame(card.body, bg=T.CARD_BG)
         grid.pack(fill="both", expand=True)
         grid.columnconfigure(1, weight=1)
+        grid.columnconfigure(3, weight=1)
 
+        split = (len(HOTKEY_TARGETS) + 1) // 2
         for i, name in enumerate(HOTKEY_TARGETS):
+            col = 0 if i < split else 2
+            row = i if i < split else i - split
             lbl = tk.Label(
                 grid,
                 text=name,
@@ -81,11 +85,10 @@ class HotkeysWindow(tk.Toplevel):
                 font=T.FONT,
                 anchor="w",
             )
-            lbl.grid(row=i, column=0, sticky="w", pady=2, padx=(0, 8))
+            lbl.grid(row=row, column=col, sticky="w", pady=2, padx=(0, 8))
             box_name = f"{name} bind box"
-            entry = pressable_entry(grid, logger, box_name, width=18)
-            entry.insert(0, "")
-            entry.grid(row=i, column=1, sticky="ew", pady=2)
+            entry = pressable_entry(grid, logger, box_name, width=16)
+            entry.grid(row=row, column=col + 1, sticky="ew", pady=2, padx=(0, 16))
             self.bind_boxes[name] = entry
 
         def _close() -> None:
