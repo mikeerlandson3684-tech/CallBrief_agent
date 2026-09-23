@@ -265,12 +265,13 @@ class TealCard(tk.Frame):
         # Square packed header is inset so it does not square off the card
         # corners; paint the leftover left/right gutters teal down to hh.
         self._canvas.create_rectangle(
-            1,
+            x1,
             min(r, hh),
-            w - 2,
+            x2,
             hh,
             fill=T.HEADER_BG,
             outline=T.HEADER_BG,
+            width=0,
             tags="card",
         )
         round_top_rect(
