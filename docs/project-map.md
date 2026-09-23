@@ -8,6 +8,7 @@ Maintained by the Repository Organizer. Reflects this git checkout only. Do not 
 .
 ├── .cursor/agents/
 │   ├── mr-fix-it.md              # Mr. Fix-it: isolate, report cause, then repair
+│   ├── mr-grafix.md              # Mr. Grafix: graphic editing only; reports to Fix-it
 │   ├── repository-organizer.md   # coordinates layout, planning, non-overlapping edits
 │   └── verification-specialist.md  # tests, docs, Git status, gaps (read-only)
 ├── AGENTS.md                     # how agents work; approval gates; VERSION wake rules
@@ -31,13 +32,14 @@ Mr. Fix-it and the verification specialist **test against the current iteration 
 Main Cursor chat
   └── Repository Organizer
         ├── Mr. Fix-it
+        │     └── Mr. Grafix          # graphics only; not a standing employee
         ├── (later) GUI specialist
         ├── (later) Firmware specialist
         ├── (later) Documentation specialist
         └── Verification specialist
 ```
 
-Only **organizer**, **verifier**, and **Mr. Fix-it** exist now. Too many specialists is counterproductive. No GUI, firmware, or documentation specialist files.
+**Organizer**, **verifier**, **Mr. Fix-it**, and **Mr. Grafix** exist now. Grafix reports to Fix-it for graphic tickets (not the coordinator). He is not a GUI specialist and not a standing employee. Too many specialists is counterproductive. No GUI, firmware, or documentation specialist files.
 
 ## Authoritative specs (not in this git tree yet)
 

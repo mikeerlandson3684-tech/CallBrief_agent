@@ -2,23 +2,30 @@
 
 How Cursor agents work on this GRBL digitizing repo.
 
-Too many specialists is counterproductive; **only organizer + verifier + Mr. Fix-it exist now.**
+Too many specialists is counterproductive; **organizer + verifier + Mr. Fix-it + Mr. Grafix** exist now. Grafix is graphics-only and **not** a standing employee. Do not add a GUI, firmware, or documentation specialist.
 
 ## Custom agents
 
 | Agent | File | Role |
 | --- | --- | --- |
 | Repository Organizer | [`.cursor/agents/repository-organizer.md`](.cursor/agents/repository-organizer.md) | Inspect layout, classify work, plan small tasks, keep maps/README/`AGENTS.md` current, prevent overlapping edits |
-| Mr. Fix-it | [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md) | Whole-system integration (preview, USB/GRBL, GUI, files). PR 4 only stores this instruction file. Invoke `/mr-fix-it` or ask for Mr. Fix-it |
+| Mr. Fix-it | [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md) | Whole-system integration (preview, USB/GRBL, GUI, files). May dispatch or review Grafix for chrome; still owns non-graphic bugs. PR 4 only stores this instruction file. Invoke `/mr-fix-it` or ask for Mr. Fix-it |
+| Mr. Grafix | [`.cursor/agents/mr-grafix.md`](.cursor/agents/mr-grafix.md) | Graphic editing only (cards, headers, pills, chips, mockup match, rounded fill, cutouts). Reports to Mr. Fix-it, not the coordinator. Invoke `/mr-grafix` only when Mike asks or the iteration sheet has a visual row |
 | Verification specialist | [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md) | After changes: run tests, check docs, Git status, report gaps |
 
-Main Cursor chat → **Repository Organizer** → **Mr. Fix-it**, (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
+Main Cursor chat → **Repository Organizer** → **Mr. Fix-it** (who may dispatch **Mr. Grafix** for chrome), (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
 
-Do not add GUI, firmware, or documentation specialist files until there is a distinct, recurring need. Invoke with `/repository-organizer`, `/mr-fix-it`, or `/verification-specialist`, or by asking in natural language. Descriptions are written so Agent can auto-delegate.
+Do not add GUI, firmware, or documentation specialist files until there is a distinct, recurring need. **Mr. Grafix is not that GUI specialist.** Invoke with `/repository-organizer`, `/mr-fix-it`, `/mr-grafix`, or `/verification-specialist`, or by asking in natural language. Descriptions are written so Agent can auto-delegate.
 
-Mr. Fix-it owns [`docs/fix-it-log.md`](docs/fix-it-log.md) (and the store copy). He must read it before guessing. Checkpoints are last-known-good notes and git tags at minor/major [`VERSION`](VERSION) values — not a license to rewrite history or force-push.
+Mr. Fix-it owns [`docs/fix-it-log.md`](docs/fix-it-log.md) (and the store copy). He must read it before guessing. Graphic isolate/repair from Grafix goes in that same log. Checkpoints are last-known-good notes and git tags at minor/major [`VERSION`](VERSION) values — not a license to rewrite history or force-push.
 
-**PR 4 only stores Mr. Fix-it’s instruction file** (`.cursor/agents/mr-fix-it.md`). His **scope is the whole digitizer system** (preview, USB/GRBL, GUI, files, integration), not this housekeeping PR. When woken, he inspects whatever is actually in play, including product code on other branches/PRs such as the preview.
+**PR 4 only stores instruction files** (`.cursor/agents/mr-fix-it.md`, `.cursor/agents/mr-grafix.md`). Mr. Fix-it’s **scope is the whole digitizer system** (preview, USB/GRBL, GUI, files, integration), not this housekeeping PR. When woken, he inspects whatever is actually in play, including product code on other branches/PRs such as the preview.
+
+## Wake Mr. Grafix (graphics only)
+
+Reports to **Mr. Fix-it**, not the coordinator, for graphic tickets. Wake **only** when Mike asks for a graphic edit, or the current iteration sheet has a visual row / graphic miss. Not a standing employee. Color only when Mike locks it. First job (already assigned on PR 6, do not implement on this PR): header side cutouts.
+
+Do **not** send Grafix GRBL/USB/wiring, probe cycles, version classification, whole-system sweeps, merging PRs, or deleting files.
 
 ## Wake Mr. Fix-it on the whole system
 
