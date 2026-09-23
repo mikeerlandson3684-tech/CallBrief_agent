@@ -76,6 +76,10 @@ def app():
     win.destroy()
 
 
+def test_window_title_is_low_k8(app: MainWindow) -> None:
+    assert app.title() == "Low-K8"
+
+
 def test_required_controls_exist(app: MainWindow) -> None:
     missing = [name for name in REQUIRED_CONTROLS if name not in app.controls]
     assert missing == []

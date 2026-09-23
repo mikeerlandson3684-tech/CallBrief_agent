@@ -57,7 +57,7 @@ class MainWindow(tk.Tk):
 
     def __init__(self, *, sample: bool = False) -> None:
         super().__init__()
-        self.title("CNC Probe System")
+        self.title("Low-K8")
         self.configure(bg=T.PAGE_BG)
         # 840 is the measured floor at minsize width: 760/800/820 squeeze or
         # cover Measured Diameter (worse when the Incremental hint wraps).
