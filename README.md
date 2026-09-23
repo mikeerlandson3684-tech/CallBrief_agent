@@ -4,9 +4,9 @@ Probe-only 3-axis gantry: drive a digital probe in XYZ, log features, write DXF.
 
 Language is **Python**. UI toolkit is **Tkinter as the starting default** (not a forever lock; Qt/WPF are not chosen).
 
-## This slice — DXF preview
+## This slice — paralyzed main window + DXF preview
 
-Right-side preview panel only. No ID/OD probe walks, no rectangles, no generated G-code, no USB/GRBL motion.
+Full main GUI around the existing envelope-scaled preview. Controls are **clickable and show a press**; they log `"{name} pressed"` in Messages. No GRBL, no USB, no probe cycles, no GO TO motion, no file I/O. The preview Z-circle and grid stay live via simulated XYZ sliders.
 
 ### How to run
 
@@ -19,11 +19,14 @@ python3 -m digitizer
 Optional:
 
 ```bash
-python3 -m digitizer --sample          # show demo ID/OD captures
+python3 -m digitizer --sample          # show demo ID/OD captures on the preview
+python3 -m digitizer --preview-only    # older standalone preview demo
 python3 -m pytest tests                # geometry + widget tests
 ```
 
-The window is the preview widget plus **simulated XYZ sliders**. Those sliders are a stub until a DRO / GRBL `?` status reader implements the same `PositionSource.get_xyz()` contract in `digitizer/position.py`. They are not jogging and not USB.
+Toolbar includes **Save** and **Close** (decided; omitted from the mockup PNG). **Bridge: COMx** is dropped. Feature entry is **ID Circle** and **OD Circle** as separate paralyzed controls (no Circle/Rectangle toggle, no Inner/Outer finder). Stylus diameter is not on this screen. **Hotkeys** opens a stub bind-box window (click a box; no real key capture yet).
+
+Simulated XYZ sliders in the preview card are a stub until a DRO / GRBL `?` status reader implements the same `PositionSource.get_xyz()` contract in `digitizer/position.py`. They are not jogging and not USB. Jog / GO TO buttons do **not** move the stub.
 
 ### Envelope scale
 
@@ -82,6 +85,9 @@ digitizer/
   session.py          # current-file captures (ID/OD, Z, origin)
   preview_geom.py     # envelope fit, grid, Z→radius
   preview.py          # Tkinter DxfPreview widget
-  demo_app.py         # standalone window + sim sliders
+  chrome.py           # teal cards, pressable buttons, message log
+  main_window.py      # paralyzed three-column GUI
+  hotkeys.py          # stub bind-box window
+  demo_app.py         # standalone preview (`--preview-only`)
 tests/
 ```

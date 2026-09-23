@@ -45,6 +45,8 @@ class DxfPreview(tk.Frame):
         position_source: PositionSource | None = None,
         session: CaptureSession | None = None,
         poll_ms: int = 50,
+        show_header: bool = True,
+        show_notes: bool = True,
         **kwargs: object,
     ) -> None:
         super().__init__(master, bg=_BG, **kwargs)
@@ -55,50 +57,61 @@ class DxfPreview(tk.Frame):
         self._poll_job: str | None = None
 
         self.columnconfigure(0, weight=1)
-        self.rowconfigure(2, weight=1)
 
-        header = tk.Frame(self, bg=_HEADER, padx=10, pady=6)
-        header.grid(row=0, column=0, sticky="ew")
-        tk.Label(
-            header,
-            text="DXF Preview",
-            bg=_HEADER,
-            fg="#064e3b",
-            font=("Segoe UI", 12, "bold"),
-        ).pack(side="left")
+        row = 0
         self._xyz_var = tk.StringVar(value="")
-        tk.Label(header, textvariable=self._xyz_var, bg=_HEADER, fg="#115e59").pack(side="right")
+        if show_header:
+            header = tk.Frame(self, bg=_HEADER, padx=10, pady=6)
+            header.grid(row=row, column=0, sticky="ew")
+            tk.Label(
+                header,
+                text="DXF Preview",
+                bg=_HEADER,
+                fg="#064e3b",
+                font=("Segoe UI", 12, "bold"),
+            ).pack(side="left")
+            tk.Label(header, textvariable=self._xyz_var, bg=_HEADER, fg="#115e59").pack(side="right")
+            row += 1
+        else:
+            xyz = tk.Label(self, textvariable=self._xyz_var, bg=_BG, fg="#115e59", font=("Segoe UI", 8))
+            xyz.grid(row=row, column=0, sticky="e", padx=8)
+            row += 1
 
         self._banner = tk.StringVar(value="")
-        tk.Label(
-            self,
-            textvariable=self._banner,
-            bg=_BG,
-            fg="#9a3412",
-            font=("Segoe UI", 8),
-            wraplength=420,
-            justify="left",
-            anchor="w",
-        ).grid(row=1, column=0, sticky="ew", padx=8, pady=(4, 0))
+        if show_notes:
+            tk.Label(
+                self,
+                textvariable=self._banner,
+                bg=_BG,
+                fg="#9a3412",
+                font=("Segoe UI", 8),
+                wraplength=420,
+                justify="left",
+                anchor="w",
+            ).grid(row=row, column=0, sticky="ew", padx=8, pady=(4, 0))
+            row += 1
 
         self.canvas = tk.Canvas(self, bg=_CANVAS_BG, highlightthickness=1, highlightbackground="#cbd5e1")
-        self.canvas.grid(row=2, column=0, sticky="nsew", padx=8, pady=8)
+        self.canvas.grid(row=row, column=0, sticky="nsew", padx=8, pady=8)
+        self.rowconfigure(row, weight=1)
         self.canvas.bind("<Configure>", self._on_configure)
+        row += 1
 
-        footer = tk.Frame(self, bg=_BG)
-        footer.grid(row=3, column=0, sticky="ew", padx=8, pady=(0, 6))
-        tk.Label(
-            footer,
-            text="Full working envelope (not zoom-to-part).  "
-            "Probe circle grows with Z+ / shrinks with Z−.  "
-            "Empty file = grid + probe only.",
-            bg=_BG,
-            fg=_LABEL,
-            font=("Segoe UI", 8),
-            wraplength=480,
-            justify="left",
-            anchor="w",
-        ).pack(side="left", fill="x", expand=True)
+        if show_notes:
+            footer = tk.Frame(self, bg=_BG)
+            footer.grid(row=row, column=0, sticky="ew", padx=8, pady=(0, 6))
+            tk.Label(
+                footer,
+                text="Full working envelope (not zoom-to-part).  "
+                "Probe circle grows with Z+ / shrinks with Z−.  "
+                "Empty file = grid + probe only.",
+                bg=_BG,
+                fg=_LABEL,
+                font=("Segoe UI", 8),
+                wraplength=480,
+                justify="left",
+                anchor="w",
+            ).pack(side="left", fill="x", expand=True)
 
         self._refresh_banner()
         self.redraw()

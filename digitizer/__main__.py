@@ -1,6 +1,6 @@
-"""python -m digitizer  —  open the DXF preview demo window."""
+"""python -m digitizer  —  open the paralyzed main GUI (preview stays live)."""
 
-from digitizer.demo_app import main
+from digitizer.main_window import main
 
 if __name__ == "__main__":
     raise SystemExit(main())

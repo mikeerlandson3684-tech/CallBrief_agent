@@ -12,6 +12,7 @@ import tkinter as tk
 
 from digitizer.machine_config import default_envelope
 from digitizer.position import SimulatedPosition
+from digitizer.chrome import write_window_png
 from digitizer.preview import DxfPreview
 from digitizer.session import CaptureSession, sample_session
 
@@ -132,35 +133,11 @@ def build_window(
     return root, preview, pos, session
 
 
-def _write_screenshot(root: tk.Tk, path: str) -> None:
-    """Grab the toplevel via the X11 window id. ImageMagick `import` if present."""
-    import shutil
-    import subprocess
-
-    root.update_idletasks()
-    root.update()
-    wid = hex(root.winfo_id())
-    if shutil.which("import"):
-        subprocess.run(["import", "-window", wid, path], check=True)
-        return
-    if shutil.which("gnome-screenshot"):
-        subprocess.run(["gnome-screenshot", "-w", "-f", path], check=True)
-        return
-    # Fallback: canvas PostScript (vector, not PNG).
-    ps_path = path.rsplit(".", 1)[0] + ".ps"
-    # The preview canvas is the first Canvas child.
-    canvases = [c for c in root.winfo_children() if isinstance(c, tk.Frame)]
-    raise SystemExit(
-        f"No screenshot tool (ImageMagick import / gnome-screenshot). "
-        f"Window id={wid}. Cannot write {path} (ps fallback unused: {ps_path}, frames={len(canvases)})."
-    )
-
-
 def main(argv: list[str] | None = None) -> int:
     args = _build_parser().parse_args(argv)
     root, _preview, _pos, _session = build_window(sample=args.sample)
     if args.screenshot:
-        root.after(250, lambda: (_write_screenshot(root, args.screenshot), root.destroy()))
+        root.after(250, lambda: (write_window_png(root, args.screenshot), root.destroy()))
     root.mainloop()
     return 0
 
