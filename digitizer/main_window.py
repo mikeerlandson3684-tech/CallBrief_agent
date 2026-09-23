@@ -347,6 +347,7 @@ class MainWindow(tk.Tk):
             troughcolor=T.TROUGH,
             sliderrelief="flat",
             bd=0,
+            width=20,
             command=lambda _v: self._speed_readout.set(f"{self._jog_speed.get():.3f} in/sec"),
         )
         scale.pack(fill="x")
