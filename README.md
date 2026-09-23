@@ -1,6 +1,8 @@
-# GRBL digitizing control
+# Low-K8
 
 Probe-only 3-axis gantry control for capturing existing part features and writing them to DXF. Not a mill, lathe, or printer.
+
+**Product name: Low-K8** (that spelling). The Python package stays `digitizer` — do not rename it.
 
 This git checkout is **greenfield**. There is no firmware tree or GUI application here yet — only project housekeeping so later work stays organized.
 

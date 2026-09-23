@@ -64,6 +64,7 @@ Not a work-order system. Full rules: Cursor project store `docs/accuracy-gates.m
 
 ## Project rules for every agent
 
+- Product name is **Low-K8** (that spelling). Do not rename the `digitizer` package. Do not invent other product names.
 - This checkout is greenfield for the digitizer. Do not pretend firmware or UI code exists until it is in the tree.
 - Hardware is decided: MakerBase MKS DLC32 v2.1, TMC2209 V2.0 MKS, NEMA 17, 20 tooth GT2, 3-pin NC digital touch probe, two NC micro switches in series on each end of all 3 axes, GRBL. v1 control is USB laptop ↔ board (WiFi unused). Do not invent a different board, probe, or limit scheme. Detail: Cursor project store `docs/project-context.md`.
 - Language is **Python**; **Tkinter is the starting UI default** (not a forever lock; do not treat Qt, WPF, or other toolkits as chosen). Do not invent a different stack, GRBL/G-code, probe cycles, or approach paths.
