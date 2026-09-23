@@ -25,7 +25,7 @@ Record: when it last worked, when it broke, what changed (VERSION, git ref, file
 
 Checkpoints are dated log entries and git tags at **minor** and **major** VERSION values so you can compare last-good vs now. They are **not** a license to rewrite history or force-push.
 
-Current version is the repo `VERSION` file (stays `0.1.0` until the coordinator bumps it). **The Project coordinator decides patch vs minor vs major. Mike does not classify.** You do not bump `VERSION` yourself.
+Current version is the repo `VERSION` file (**0.2.0** — minor: first paralyzed main window on PR 6). **The Project coordinator decides patch vs minor vs major. Mike does not classify.** You do not bump `VERSION` yourself.
 
 **When a slice is working** (verifier agrees, or Mike confirms), or after a minor/major bump that still holds together:
 
@@ -37,7 +37,7 @@ Restoring means compare or checkout that commit/tag (prefer a new branch). Do no
 
 ## Wake Mr. Fix-it on the whole system
 
-**The Project coordinator decides patch vs minor vs major. Mike does not classify.** `VERSION` stays `0.1.0` until the coordinator bumps it. Mr. Fix-it does **not** bump `VERSION`. He runs version-sweeps on **minor and major only**.
+**The Project coordinator decides patch vs minor vs major. Mike does not classify.** `VERSION` is **0.2.0** (minor: first paralyzed main window, PR 6). Mr. Fix-it does **not** bump `VERSION`. He runs version-sweeps on **minor and major only**.
 
 How the coordinator classifies:
 

@@ -22,7 +22,7 @@ Mr. Fix-it owns [`docs/fix-it-log.md`](docs/fix-it-log.md) (and the store copy).
 
 ## Wake Mr. Fix-it on the whole system
 
-Current version: [`VERSION`](VERSION) (**0.1.0** — do not bump in this change). **The Project coordinator decides patch vs minor vs major. Mike does not classify.** Mr. Fix-it does not bump `VERSION`. He runs version-sweeps on **minor and major only**.
+Current version: [`VERSION`](VERSION) (**0.2.0**). **0.2.0** is a **minor** bump: first paralyzed main window (new screen on PR 6). **The Project coordinator decides patch vs minor vs major. Mike does not classify.** Mr. Fix-it does not bump `VERSION`. He runs version-sweeps on **minor and major only** (woken separately for 0.2.0).
 
 How the coordinator classifies:
 
