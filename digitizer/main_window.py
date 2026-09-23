@@ -58,7 +58,9 @@ class MainWindow(tk.Tk):
         super().__init__()
         self.title("CNC Probe System")
         self.configure(bg=T.PAGE_BG)
-        self.minsize(1180, 760)
+        # 840 is the measured floor at minsize width: 760/800/820 squeeze or
+        # cover Measured Diameter (worse when the Incremental hint wraps).
+        self.minsize(1180, 840)
         self.geometry("1280x840")
 
         env = default_envelope()
@@ -85,10 +87,11 @@ class MainWindow(tk.Tk):
         self._diameter = tk.StringVar(value="Measured Diameter: ---")
         self._jog_speed = tk.DoubleVar(value=0.0)
         self._speed_readout = tk.StringVar(value="0.000 in/sec")
+        self._dro_job: str | None = None
 
         self._build()
         self._refresh_dro()
-        self.after(50, self._poll_dro)
+        self._dro_job = self.after(50, self._poll_dro)
 
     def log(self, name: str) -> None:
         self.messages.append(f"{name} pressed")
@@ -109,6 +112,27 @@ class MainWindow(tk.Tk):
             widget.event_generate("<ButtonRelease-1>")
         self.update_idletasks()
         self.update()
+
+    def destroy(self) -> None:
+        self._stop_dro_poll()
+        super().destroy()
+
+    def _stop_dro_poll(self) -> None:
+        if self._dro_job is not None:
+            try:
+                self.after_cancel(self._dro_job)
+            except tk.TclError:
+                pass
+            self._dro_job = None
+
+    def _bind_wraplength(self, label: tk.Label) -> None:
+        """Keep hint text wrapping inside the card instead of clipping at minsize."""
+
+        def _cfg(event: tk.Event) -> None:  # type: ignore[type-arg]
+            if event.width > 1:
+                label.configure(wraplength=max(event.width - 2, 80))
+
+        label.bind("<Configure>", _cfg, add="+")
 
     def _remember(self, name: str, widget: tk.Widget) -> tk.Widget:
         self.controls[name] = widget
@@ -344,7 +368,7 @@ class MainWindow(tk.Tk):
         self._od_btn.pack(side="left", expand=True, fill="x")
         self._remember("ID Circle", self._id_btn)
         self._remember("OD Circle", self._od_btn)
-        tk.Label(
+        feature_note = tk.Label(
             feature.body,
             text="ID circle and OD circle are separate routines.",
             bg=T.CARD_BG,
@@ -353,7 +377,9 @@ class MainWindow(tk.Tk):
             wraplength=360,
             justify="left",
             anchor="w",
-        ).pack(fill="x", pady=(6, 0))
+        )
+        feature_note.pack(fill="x", pady=(6, 0))
+        self._bind_wraplength(feature_note)
 
         capture = TealCard(parent, "Capture", logger=self.log)
         capture.pack(fill="x", pady=(0, 8))
@@ -392,7 +418,7 @@ class MainWindow(tk.Tk):
 
         inc = TealCard(parent, "Incremental", logger=self.log)
         inc.pack(fill="x", pady=(0, 8))
-        tk.Label(
+        inc_note = tk.Label(
             inc.body,
             text="Incremental Jog (hold Ctrl, then jog). Predetermined steps. Not GO TO.",
             bg=T.CARD_BG,
@@ -401,7 +427,10 @@ class MainWindow(tk.Tk):
             wraplength=360,
             justify="left",
             anchor="w",
-        ).pack(fill="x", pady=(0, 6))
+        )
+        inc_note.pack(fill="x", pady=(0, 6))
+        self._bind_wraplength(inc_note)
+        self._inc_note = inc_note
         radios = tk.Frame(inc.body, bg=T.CARD_BG)
         radios.pack(fill="x")
         for label in ('.001"', '.010"', '.100"', "Custom"):
@@ -472,6 +501,7 @@ class MainWindow(tk.Tk):
         """Live SimulatedPosition sliders so the preview Z-circle/grid stay alive."""
         bar = tk.Frame(self, bg=T.CARD_BG, highlightbackground=T.BORDER, highlightthickness=1)
         bar.grid(row=3, column=0, sticky="ew", padx=10, pady=(0, 10))
+        self._sim_bar = bar
         tk.Label(
             bar,
             text="Simulated position (not GRBL, not USB)",
@@ -529,9 +559,9 @@ class MainWindow(tk.Tk):
     def _poll_dro(self) -> None:
         self._refresh_dro()
         try:
-            self.after(50, self._poll_dro)
+            self._dro_job = self.after(50, self._poll_dro)
         except tk.TclError:
-            pass
+            self._dro_job = None
 
     def _refresh_dro(self) -> None:
         x, y, z = self.position.get_xyz()

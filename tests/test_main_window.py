@@ -164,6 +164,47 @@ def test_hotkeys_stub_has_bind_boxes(app: MainWindow) -> None:
     app._close_hotkeys()
 
 
+def test_minsize_keeps_footer_above_sim_bar(app: MainWindow) -> None:
+    min_w, min_h = app.minsize()
+    assert min_h >= 840
+    app.geometry(f"{int(min_w)}x{int(min_h)}")
+    app.update_idletasks()
+    app.update()
+    sim_top = app._sim_bar.winfo_rooty()  # noqa: SLF001
+    ay = app.winfo_rooty()
+    ah = app.winfo_height()
+    for name in ("Jog Speed", "Custom increment", "Measured Diameter"):
+        widget = app.controls[name]
+        y = widget.winfo_rooty()
+        height = widget.winfo_height()
+        assert widget.winfo_width() > 1 and height >= 20, name
+        assert y + height <= ay + ah + 2, name
+        assert y + height <= sim_top + 2, name
+
+
+def test_incremental_hint_wraps_inside_card(app: MainWindow) -> None:
+    min_w, min_h = app.minsize()
+    app.geometry(f"{int(min_w)}x{int(min_h)}")
+    app.update_idletasks()
+    app.update()
+    note = app._inc_note  # noqa: SLF001
+    wrap = int(float(note.cget("wraplength")))
+    assert wrap <= note.winfo_width() + 2
+    assert wrap >= 80
+    assert "Not GO TO" in note.cget("text")
+
+
+def test_destroy_cancels_dro_poll() -> None:
+    win = MainWindow()
+    win.update()
+    assert win._dro_job is not None  # noqa: SLF001
+    win.destroy()
+    win2 = MainWindow()
+    win2.update_idletasks()
+    win2.update()
+    win2.destroy()
+
+
 def test_main_window_is_not_a_motion_or_gcode_client() -> None:
     from digitizer import chrome, hotkeys, main_window
 
