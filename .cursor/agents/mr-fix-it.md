@@ -25,7 +25,7 @@ Record: when it last worked, when it broke, what changed (VERSION, git ref, file
 
 Checkpoints are dated log entries and git tags at **minor** and **major** VERSION values so you can compare last-good vs now. They are **not** a license to rewrite history or force-push.
 
-Current version is the repo `VERSION` file (**0.2.0** — minor: first paralyzed main window on PR 6). **The Project coordinator decides patch vs minor vs major. Mike does not classify.** You do not bump `VERSION` yourself.
+Current version is the repo `VERSION` file (**0.2.0** — minor: first paralyzed main window on PR 6). **The Project coordinator decides patch vs minor vs major. Mike does not classify.** You do not bump `VERSION` yourself. **Test against the current iteration sheet** (`docs/iterations/0.2.0.md`; index `docs/version-log.md` and the store copies). Every VERSION bump must update that log.
 
 **When a slice is working** (verifier agrees, or Mike confirms), or after a minor/major bump that still holds together:
 

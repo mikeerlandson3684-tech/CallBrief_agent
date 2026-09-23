@@ -15,10 +15,15 @@ Maintained by the Repository Organizer. Reflects this git checkout only. Do not 
 ├── VERSION                       # 0.2.0 minor: first paralyzed main window (PR 6)
 └── docs/
     ├── fix-it-log.md             # Mr. Fix-it log book and last-known-good notes
-    └── project-map.md            # this file
+    ├── project-map.md            # this file
+    ├── version-log.md            # requirements/goals/test index; update on every VERSION bump
+    └── iterations/
+        └── 0.2.0.md              # current iteration sheet (test against this)
 ```
 
-No other project directories exist in this checkout.
+No firmware or product GUI in this checkout (product GUI is PR 6).
+
+Mr. Fix-it and the verification specialist **test against the current iteration sheet**. Every `VERSION` bump must update `docs/version-log.md` and add a section or `docs/iterations/<VERSION>.md`.
 
 ## Agent tree (intended)
 
@@ -40,7 +45,9 @@ Hardware (MKS DLC32 v2.1, TMC2209 V2.0 MKS, NEMA 17, 20T GT2, 3-pin NC probe, se
 
 Measurement intent and stylus offset math: Cursor project store `docs/probing-routines.md` (3-pin NC digital touch probe; ID increases displayed motion; OD shrinks it). Do not generate probe cycles or change offset math.
 
-When those specs are copied into this repo, add their paths here.
+**Version requirements/test log is in this tree:** [`docs/version-log.md`](version-log.md), current sheet [`docs/iterations/0.2.0.md`](iterations/0.2.0.md). Screenshots and GUI-direction specs remain in the store.
+
+When remaining specs are copied into this repo, add their paths here.
 
 ## Approval gates
 

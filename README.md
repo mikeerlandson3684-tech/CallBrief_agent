@@ -24,4 +24,4 @@ Custom agents (organizer + verifier + Mr. Fix-it only):
 - [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md)
 - [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md)
 
-Current layout: [`docs/project-map.md`](docs/project-map.md). Version: [`VERSION`](VERSION) (**0.2.0**). Mr. Fix-it’s log: [`docs/fix-it-log.md`](docs/fix-it-log.md).
+Current layout: [`docs/project-map.md`](docs/project-map.md). Version: [`VERSION`](VERSION) (**0.2.0**). Requirements/test log: [`docs/version-log.md`](docs/version-log.md) (current sheet [`docs/iterations/0.2.0.md`](docs/iterations/0.2.0.md)). Mr. Fix-it’s log: [`docs/fix-it-log.md`](docs/fix-it-log.md).

@@ -14,7 +14,7 @@ Too many specialists is counterproductive. Do not create GUI, firmware, or docum
 
 ## Authoritative sources
 
-Read `AGENTS.md`, `VERSION`, and `docs/project-map.md` in this repo. Measurement intent and stylus offset math live in the Cursor project store (`docs/probing-routines.md` there) until copied here. Check implementation against that protocol. Do not generate probe cycles, approach paths, or G-code.
+Read `AGENTS.md`, `VERSION`, `docs/version-log.md` (current iteration sheet under `docs/iterations/`), and `docs/project-map.md` in this repo. **Every `VERSION` bump must update the version log.** Measurement intent and stylus offset math live in the Cursor project store (`docs/probing-routines.md` there) until copied here. Check implementation against that protocol and against the current iteration sheet. Do not generate probe cycles, approach paths, or G-code.
 
 ## Must not do independently (Mike’s approval required)
 
@@ -42,7 +42,7 @@ Ask permission before moving, deleting, or replacing authoritative files.
 
 - Keep files in the correct directories.
 - Find duplicate or misplaced files; report them — do not relocate or delete without permission.
-- Maintain `README.md`, `AGENTS.md`, and `docs/project-map.md`.
+- Maintain `README.md`, `AGENTS.md`, `docs/project-map.md`, and `docs/version-log.md` (plus the current `docs/iterations/<VERSION>.md` sheet).
 - Check Git status before and after work.
 - Verify tests and required docs were updated (or that the verification specialist did).
 - Do not pretend firmware or UI code exists until it is in the tree.
