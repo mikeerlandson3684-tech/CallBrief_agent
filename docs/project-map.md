@@ -47,10 +47,12 @@ Hardware (MKS DLC32 v2.1, TMC2209 V2.0 MKS, NEMA 17, 20T GT2, 3-pin NC probe, se
 
 Measurement intent and stylus offset math: Cursor project store `docs/probing-routines.md` (3-pin NC digital touch probe; ID increases displayed motion; OD shrinks it). Do not generate probe cycles or change offset math.
 
-**Version requirements/test log is in this tree:** [`docs/version-log.md`](version-log.md), current sheet [`docs/iterations/0.2.0.md`](iterations/0.2.0.md). Screenshots and GUI-direction specs remain in the store.
+Accuracy/precision (fail-closed, **not** a work-order): Cursor project store `docs/accuracy-gates.md`. Numeric capture/display **±0.002 in**. Visual close needs Mike. Agents do not close iteration-sheet rows. One lock cluster per pass.
+
+**Version requirements/test log is in this tree:** [`docs/version-log.md`](version-log.md), current sheet [`docs/iterations/0.2.0.md`](iterations/0.2.0.md). Screenshots, GUI-direction specs, and accuracy gates remain in the store.
 
 When remaining specs are copied into this repo, add their paths here.
 
 ## Approval gates
 
-Moving authoritative firmware, deleting files, rewriting safety rules, or merging competing changes requires Mike’s approval. Ask before moving, deleting, or replacing authoritative files.
+Moving authoritative firmware, deleting files, rewriting safety rules, or merging competing changes requires Mike’s approval. Ask before moving, deleting, or replacing authoritative files. **Visual lock close needs Mike** even after a Fix-it pass (store `docs/accuracy-gates.md`).

@@ -48,7 +48,19 @@ Do **not** independently:
 - Rewrite safety rules
 - Merge competing changes
 
-Ask permission before moving, deleting, or replacing authoritative files.
+Ask permission before moving, deleting, or replacing authoritative files. **Visual lock close needs Mike** even after a Fix-it pass (store `docs/accuracy-gates.md`).
+
+## Accuracy gates (fail-closed)
+
+Not a work-order system. Full rules: Cursor project store `docs/accuracy-gates.md`. Locks live on the **current iteration sheet**.
+
+- A sheet row is **fail until evidence**. **Partial is not shippable.**
+- Do not tell Mike a lock is met without evidence in hand (screenshot path, pytest, measurement). “Looks good” / “Tk approximation” is fail.
+- Visual: screenshot vs mockup/sheet. **Mike’s Try Live / eye rejects even if Fix-it passed.** 0.2.0 visual (rounded fill, no gutters) stays open until Mike accepts.
+- Numeric: captured or displayed length/position **±0.002 in** unless Mike sets another. Tests must assert that tolerance. No eyeball numbers.
+- Changed locks: update the iteration sheet **first**, then code. Chat memory is not the spec.
+- Grafix = graphics only (reports to Fix-it). Fix-it = non-graphic bugs + review. Verifier = test against the current sheet. **None of them close a row**; coordinator closes only with evidence; **visual close needs Mike**.
+- One lock cluster per pass, not the whole window.
 
 ## Project rules for every agent
 
