@@ -264,6 +264,52 @@ def test_pill_buttons_fill_canvas_without_side_gutters(app: MainWindow) -> None:
         assert btn._corner_radius(bw, bh) >= min(bw, bh) / 2.0 - 0.5  # noqa: SLF001
 
 
+def test_teal_card_header_band_is_edge_to_edge(app: MainWindow) -> None:
+    """Header strip must fill the card width so side gutters are not CARD_BG."""
+    from digitizer.chrome import TealCard
+    from digitizer import theme as T
+
+    assert T.HEADER_BG.lower() == "#c5ece8"
+
+    def _cards(widget: tk.Misc) -> list[TealCard]:
+        found: list[TealCard] = []
+        if isinstance(widget, TealCard):
+            found.append(widget)
+        for child in widget.winfo_children():
+            found.extend(_cards(child))
+        return found
+
+    app.update_idletasks()
+    app.update()
+    cards = _cards(app)
+    titles = [c.title_label.cget("text") for c in cards]
+    for need in ("DRO Position", "Status", "Jog", "Feature", "Messages", "DXF Preview"):
+        assert need in titles, titles
+    for card in cards:
+        title = str(card.title_label.cget("text"))
+        card_w = card.winfo_width()
+        header_bottom = card.header.winfo_y() + card.header.winfo_height()
+        min_x = min_y = 10**9
+        max_x = max_y = -10**9
+        found = False
+        for item in card._canvas.find_withtag("card"):  # noqa: SLF001
+            fill = str(card._canvas.itemcget(item, "fill")).lower()
+            if fill != T.HEADER_BG.lower():
+                continue
+            coords = card._canvas.coords(item)
+            if len(coords) < 4:
+                continue
+            xs, ys = coords[0::2], coords[1::2]
+            min_x, max_x = min(min_x, min(xs)), max(max_x, max(xs))
+            min_y, max_y = min(min_y, min(ys)), max(max_y, max(ys))
+            found = True
+        assert found, f"{title}: no teal header fill on canvas"
+        assert min_x <= 2, f"{title}: left header gutter {min_x}"
+        assert max_x >= card_w - 3, f"{title}: right header gutter {card_w - max_x}"
+        assert max_y >= header_bottom - 1, f"{title}: header fill {max_y} < strip {header_bottom}"
+        assert min_y <= 2, f"{title}: header fill starts at {min_y}"
+
+
 def test_main_window_is_not_a_motion_or_gcode_client() -> None:
     from digitizer import chrome, hotkeys, main_window
 

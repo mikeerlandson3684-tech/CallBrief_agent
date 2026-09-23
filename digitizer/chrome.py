@@ -51,6 +51,20 @@ def _arc_pts(cx: float, cy: float, r: float, a0: float, a1: float, step: float =
     return pts
 
 
+def _filled_shape_kwargs(kwargs: dict[str, Any], *, polygon: bool) -> dict[str, Any]:
+    """Tk polygons with an empty outline can skip a fill; match fill when needed."""
+    out = dict(kwargs)
+    if polygon:
+        out.setdefault("smooth", False)
+        out.setdefault("joinstyle", "round")
+    fill = out.get("fill")
+    outline = out.get("outline")
+    if fill and outline in ("", None):
+        out["outline"] = fill
+        out.setdefault("width", 0)
+    return out
+
+
 def round_rect(
     canvas: tk.Canvas,
     x1: float,
@@ -65,15 +79,13 @@ def round_rect(
         return canvas.create_rectangle(x1, y1, x2, y2, **kwargs)
     r = min(float(radius), (x2 - x1) / 2.0, (y2 - y1) / 2.0)
     if r <= 0.6:
-        return canvas.create_rectangle(x1, y1, x2, y2, **kwargs)
+        return canvas.create_rectangle(x1, y1, x2, y2, **_filled_shape_kwargs(kwargs, polygon=False))
     pts: list[float] = []
     pts.extend(_arc_pts(x2 - r, y1 + r, r, -90, 0))
     pts.extend(_arc_pts(x2 - r, y2 - r, r, 0, 90))
     pts.extend(_arc_pts(x1 + r, y2 - r, r, 90, 180))
     pts.extend(_arc_pts(x1 + r, y1 + r, r, 180, 270))
-    kwargs.setdefault("smooth", False)
-    kwargs.setdefault("joinstyle", "round")
-    return canvas.create_polygon(pts, **kwargs)
+    return canvas.create_polygon(pts, **_filled_shape_kwargs(kwargs, polygon=True))
 
 
 def round_top_rect(
@@ -88,14 +100,12 @@ def round_top_rect(
     """Rounded on the top corners, square along the bottom edge."""
     r = min(float(radius), max(0.0, (x2 - x1) / 2.0), max(0.0, (y2 - y1)))
     if r <= 0.6 or y2 - y1 < r:
-        return canvas.create_rectangle(x1, y1, x2, y2, **kwargs)
+        return canvas.create_rectangle(x1, y1, x2, y2, **_filled_shape_kwargs(kwargs, polygon=False))
     pts: list[float] = []
     pts.extend(_arc_pts(x1 + r, y1 + r, r, 180, 270))
     pts.extend(_arc_pts(x2 - r, y1 + r, r, -90, 0))
     pts.extend((x2, y2, x1, y2))
-    kwargs.setdefault("smooth", False)
-    kwargs.setdefault("joinstyle", "round")
-    return canvas.create_polygon(pts, **kwargs)
+    return canvas.create_polygon(pts, **_filled_shape_kwargs(kwargs, polygon=True))
 
 
 def _paint_canvas(canvas: tk.Canvas, bg: str) -> None:
@@ -214,6 +224,19 @@ class TealCard(tk.Frame):
         self.body.pack(fill="both", expand=True, padx=inset, pady=(4, inset))
         tk.Misc.lower(self._canvas)
         self.bind("<Configure>", self._redraw, add="+")
+        # Parent Configure often fires before the packed header has its real
+        # height; redraw again when that strip is measured so side gutters fill.
+        self.header.bind("<Configure>", self._redraw, add="+")
+        self.after_idle(self._redraw)
+
+    def _header_bottom(self, card_h: int) -> int:
+        hy = int(self.header.winfo_y())
+        hhgt = int(self.header.winfo_height())
+        if hhgt > 1:
+            hh = hy + hhgt + 1
+        else:
+            hh = max(hy + 22, 22)
+        return min(max(hh, 22), max(card_h - 4, 22))
 
     def _redraw(self, _event: tk.Event | None = None) -> None:  # type: ignore[type-arg]
         w, h = self.winfo_width(), self.winfo_height()
@@ -225,6 +248,7 @@ class TealCard(tk.Frame):
             return
         r = min(float(self._radius), min(w, h) / 2.0)
         x1, y1, x2, y2 = 0.5, 0.5, w - 0.5, h - 0.5
+        tk.Misc.lower(self._canvas)
         round_rect(
             self._canvas,
             x1,
@@ -237,8 +261,18 @@ class TealCard(tk.Frame):
             width=1,
             tags="card",
         )
-        hh = self.header.winfo_y() + self.header.winfo_height() + 2
-        hh = min(max(hh, 22), h - 4)
+        hh = self._header_bottom(h)
+        # Square packed header is inset so it does not square off the card
+        # corners; paint the leftover left/right gutters teal down to hh.
+        self._canvas.create_rectangle(
+            1,
+            min(r, hh),
+            w - 2,
+            hh,
+            fill=T.HEADER_BG,
+            outline=T.HEADER_BG,
+            tags="card",
+        )
         round_top_rect(
             self._canvas,
             x1,
@@ -247,7 +281,8 @@ class TealCard(tk.Frame):
             hh,
             r,
             fill=T.HEADER_BG,
-            outline="",
+            outline=T.HEADER_BG,
+            width=0,
             tags="card",
         )
         round_rect(
