@@ -37,6 +37,20 @@ def shade(color: str, factor: float) -> str:
     return f"#{r:02x}{g:02x}{b:02x}"
 
 
+def _arc_pts(cx: float, cy: float, r: float, a0: float, a1: float, step: float = 3.0) -> list[float]:
+    pts: list[float] = []
+    if a1 < a0:
+        a1 += 360.0
+    a = a0
+    while a < a1 - 0.01:
+        rad = math.radians(a)
+        pts.extend((cx + r * math.cos(rad), cy + r * math.sin(rad)))
+        a += step
+    rad = math.radians(a1)
+    pts.extend((cx + r * math.cos(rad), cy + r * math.sin(rad)))
+    return pts
+
+
 def round_rect(
     canvas: tk.Canvas,
     x1: float,
@@ -46,24 +60,19 @@ def round_rect(
     radius: float,
     **kwargs: Any,
 ) -> int:
-    """True circular-corner rounded rectangle (not a puffy spline)."""
-    r = min(float(radius), max(0.0, (x2 - x1) / 2.0), max(0.0, (y2 - y1) / 2.0))
+    """Stadium / rounded rect that reaches the given box (no side gutters)."""
+    if x2 <= x1 or y2 <= y1:
+        return canvas.create_rectangle(x1, y1, x2, y2, **kwargs)
+    r = min(float(radius), (x2 - x1) / 2.0, (y2 - y1) / 2.0)
     if r <= 0.6:
         return canvas.create_rectangle(x1, y1, x2, y2, **kwargs)
     pts: list[float] = []
-    corners = (
-        (x2 - r, y1 + r, -90, 0),
-        (x2 - r, y2 - r, 0, 90),
-        (x1 + r, y2 - r, 90, 180),
-        (x1 + r, y1 + r, 180, 270),
-    )
-    for cx, cy, a0, a1 in corners:
-        a = a0
-        while a <= a1:
-            rad = math.radians(a)
-            pts.extend((cx + r * math.cos(rad), cy + r * math.sin(rad)))
-            a += 6
+    pts.extend(_arc_pts(x2 - r, y1 + r, r, -90, 0))
+    pts.extend(_arc_pts(x2 - r, y2 - r, r, 0, 90))
+    pts.extend(_arc_pts(x1 + r, y2 - r, r, 90, 180))
+    pts.extend(_arc_pts(x1 + r, y1 + r, r, 180, 270))
     kwargs.setdefault("smooth", False)
+    kwargs.setdefault("joinstyle", "round")
     return canvas.create_polygon(pts, **kwargs)
 
 
@@ -81,19 +90,44 @@ def round_top_rect(
     if r <= 0.6 or y2 - y1 < r:
         return canvas.create_rectangle(x1, y1, x2, y2, **kwargs)
     pts: list[float] = []
-    for a in range(180, 271, 6):
-        rad = math.radians(a)
-        pts.extend((x1 + r + r * math.cos(rad), y1 + r + r * math.sin(rad)))
-    for a in range(-90, 1, 6):
-        rad = math.radians(a)
-        pts.extend((x2 - r + r * math.cos(rad), y1 + r + r * math.sin(rad)))
+    pts.extend(_arc_pts(x1 + r, y1 + r, r, 180, 270))
+    pts.extend(_arc_pts(x2 - r, y1 + r, r, -90, 0))
     pts.extend((x2, y2, x1, y2))
     kwargs.setdefault("smooth", False)
+    kwargs.setdefault("joinstyle", "round")
     return canvas.create_polygon(pts, **kwargs)
 
 
+def _paint_canvas(canvas: tk.Canvas, bg: str) -> None:
+    """Kill Tk's default 378x265 canvas box and the gray highlight ring."""
+    canvas.configure(
+        bg=bg,
+        highlightthickness=0,
+        bd=0,
+        highlightbackground=bg,
+        highlightcolor=bg,
+        insertbackground=bg,
+    )
+
+
 def _inset_for_radius(radius: int) -> int:
-    return max(int(round(radius * 0.36)), 4)
+    """Pad rectangular children so they stay inside the circular corners."""
+    return max(int(math.ceil(radius * (1 - math.sqrt(2) / 2)) + 2), 4)
+
+
+def _new_chrome_canvas(master: tk.Misc, bg: str) -> tk.Canvas:
+    canvas = tk.Canvas(
+        master,
+        bg=bg,
+        highlightthickness=0,
+        bd=0,
+        width=1,
+        height=1,
+        highlightbackground=bg,
+        highlightcolor=bg,
+    )
+    canvas.place(relx=0, rely=0, relwidth=1, relheight=1)
+    return canvas
 
 
 class RoundedFrame(tk.Frame):
@@ -108,29 +142,33 @@ class RoundedFrame(tk.Frame):
         outline: str = T.BORDER,
         **kwargs: Any,
     ) -> None:
-        super().__init__(master, bg=host_bg(master), highlightthickness=0, bd=0, **kwargs)
+        bg = host_bg(master)
+        super().__init__(master, bg=bg, highlightthickness=0, bd=0, **kwargs)
         self._radius = radius
         self._fill = fill
         self._outline = outline
-        self._canvas = tk.Canvas(self, bg=host_bg(master), highlightthickness=0, bd=0)
-        self._canvas.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self._canvas = _new_chrome_canvas(self, bg)
         inset = _inset_for_radius(radius)
         self.inner = tk.Frame(self, bg=fill, highlightthickness=0, bd=0)
         self.inner.pack(fill="both", expand=True, padx=inset, pady=inset)
+        self._canvas.lower()
         self.bind("<Configure>", self._redraw, add="+")
 
     def _redraw(self, _event: tk.Event | None = None) -> None:  # type: ignore[type-arg]
         w, h = self.winfo_width(), self.winfo_height()
+        parent = host_bg(self.master)
+        tk.Frame.configure(self, bg=parent)
+        _paint_canvas(self._canvas, parent)
         self._canvas.delete("chip")
         if w < 8 or h < 8:
             return
         round_rect(
             self._canvas,
-            1,
-            1,
-            w - 2,
-            h - 2,
-            self._radius,
+            0.5,
+            0.5,
+            w - 0.5,
+            h - 0.5,
+            min(float(self._radius), min(w, h) / 2.0),
             fill=self._fill,
             outline=self._outline,
             width=1,
@@ -149,10 +187,10 @@ class TealCard(tk.Frame):
         logger: Callable[[str], None] | None = None,
         **kwargs: Any,
     ) -> None:
-        super().__init__(master, bg=host_bg(master), highlightthickness=0, bd=0, **kwargs)
+        bg = host_bg(master)
+        super().__init__(master, bg=bg, highlightthickness=0, bd=0, **kwargs)
         self._radius = T.RADIUS_CARD
-        self._canvas = tk.Canvas(self, bg=host_bg(master), highlightthickness=0, bd=0)
-        self._canvas.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self._canvas = _new_chrome_canvas(self, bg)
         inset = _inset_for_radius(self._radius)
 
         self.header = tk.Frame(self, bg=T.HEADER_BG, highlightthickness=0, bd=0)
@@ -174,20 +212,25 @@ class TealCard(tk.Frame):
 
         self.body = tk.Frame(self, bg=T.CARD_BG, highlightthickness=0, bd=0)
         self.body.pack(fill="both", expand=True, padx=inset, pady=(4, inset))
+        self._canvas.lower()
         self.bind("<Configure>", self._redraw, add="+")
 
     def _redraw(self, _event: tk.Event | None = None) -> None:  # type: ignore[type-arg]
         w, h = self.winfo_width(), self.winfo_height()
+        parent = host_bg(self.master)
+        tk.Frame.configure(self, bg=parent)
+        _paint_canvas(self._canvas, parent)
         self._canvas.delete("card")
         if w < 12 or h < 12:
             return
-        r = self._radius
+        r = min(float(self._radius), min(w, h) / 2.0)
+        x1, y1, x2, y2 = 0.5, 0.5, w - 0.5, h - 0.5
         round_rect(
             self._canvas,
-            1,
-            1,
-            w - 2,
-            h - 2,
+            x1,
+            y1,
+            x2,
+            y2,
             r,
             fill=T.CARD_BG,
             outline=T.BORDER,
@@ -198,9 +241,9 @@ class TealCard(tk.Frame):
         hh = min(max(hh, 22), h - 4)
         round_top_rect(
             self._canvas,
-            1,
-            1,
-            w - 2,
+            x1,
+            y1,
+            x2,
             hh,
             r,
             fill=T.HEADER_BG,
@@ -209,10 +252,10 @@ class TealCard(tk.Frame):
         )
         round_rect(
             self._canvas,
-            1,
-            1,
-            w - 2,
-            h - 2,
+            x1,
+            y1,
+            x2,
+            y2,
             r,
             fill="",
             outline=T.BORDER,
@@ -242,7 +285,8 @@ class PillButton(tk.Frame):
         self._logger = logger
         self._command = command
         self._text = text
-        self._pill = pill
+        _ = pill  # API: every PillButton is a stadium (no rectangular side gutters)
+        self._pill = True
         self._radius = T.RADIUS_BUTTON if radius is None else radius
         self._fill = str(kwargs.pop("bg", T.BTN_BG))
         self._fg = str(kwargs.pop("fg", T.BTN_FG))
@@ -263,8 +307,8 @@ class PillButton(tk.Frame):
 
         self.selected = False
         self._pressed = False
-        self._canvas = tk.Canvas(self, bg=bg, highlightthickness=0, bd=0, cursor=cursor)
-        self._canvas.pack(fill="both", expand=True)
+        self._canvas = _new_chrome_canvas(self, bg)
+        self._canvas.configure(cursor=cursor)
         self.pack_propagate(False)
         self._apply_size()
         self.bind("<Configure>", self._redraw, add="+")
@@ -302,7 +346,8 @@ class PillButton(tk.Frame):
         return T.BTN_BORDER
 
     def _corner_radius(self, width: int, height: int) -> float:
-        cap = max(min(width, height) / 2.0 - 1.0, 1.0)
+        """Fully rounded stadium: radius is half the short side (no cut-off sides)."""
+        cap = max(min(width, height) / 2.0, 1.0)
         if self._pill:
             return cap
         return min(float(self._radius), cap)
@@ -314,15 +359,19 @@ class PillButton(tk.Frame):
             return
         parent = host_bg(self.master)
         tk.Frame.configure(self, bg=parent)
-        self._canvas.configure(bg=parent)
-        inset = 1.5 if self._pressed else 1.0
+        _paint_canvas(self._canvas, parent)
+        # Press shrinks the fill slightly; idle fills the widget so no side gutters.
+        inset = 1.5 if self._pressed else 0.5
+        radius = self._corner_radius(w, h)
+        if inset:
+            radius = max(radius - inset, 1.0)
         round_rect(
             self._canvas,
             inset,
             inset,
             w - inset,
             h - inset,
-            self._corner_radius(w, h),
+            radius,
             fill=self._fill_now(),
             outline=self._outline_now(),
             width=1,
@@ -463,8 +512,17 @@ class ProbeLamp(tk.Frame):
     def __init__(self, master: tk.Misc, logger: Callable[[str], None], **kwargs: Any) -> None:
         super().__init__(master, bg=host_bg(master), highlightthickness=0, bd=0, **kwargs)
         self._on = False
+        lamp_bg = host_bg(master)
         self._canvas = tk.Canvas(
-            self, width=18, height=18, bg=host_bg(master), highlightthickness=0, cursor="hand2"
+            self,
+            width=18,
+            height=18,
+            bg=lamp_bg,
+            highlightthickness=0,
+            bd=0,
+            highlightbackground=lamp_bg,
+            highlightcolor=lamp_bg,
+            cursor="hand2",
         )
         self._canvas.pack(side="left")
         self._dot = self._canvas.create_oval(3, 3, 15, 15, fill=T.LAMP_OFF, outline="#94a3b8")

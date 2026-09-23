@@ -224,6 +224,7 @@ def test_buttons_and_cards_are_rounded_not_raised_tk(app: MainWindow) -> None:
     assert isinstance(init, PillButton)
     assert not isinstance(cap, tk.Button)
     assert init._pill is True  # noqa: SLF001
+    assert cap._pill is True  # noqa: SLF001
     assert str(tk.Frame.cget(init, "relief")) == "flat"
     assert isinstance(preview_card, TealCard)
     assert preview_card._radius >= 12  # noqa: SLF001
@@ -236,6 +237,31 @@ def test_buttons_and_cards_are_rounded_not_raised_tk(app: MainWindow) -> None:
     w = init.winfo_width()
     assert h > 8 and w > h
     assert init._corner_radius(w, h) >= h / 2 - 2  # noqa: SLF001
+
+
+def test_pill_buttons_fill_canvas_without_side_gutters(app: MainWindow) -> None:
+    """Rectangular canvas leftover on left/right of the stadium is the shape bug."""
+    from digitizer.chrome import PillButton
+
+    for name in ("New File", "Capture Feature", "FINISH PROBING", "Initialized", "Y+"):
+        btn = app.controls[name]
+        assert isinstance(btn, PillButton)
+        canvas = next(c for c in btn.winfo_children() if isinstance(c, tk.Canvas))
+        bw, bh = btn.winfo_width(), btn.winfo_height()
+        assert bw > 8 and bh > 8
+        assert float(canvas.cget("width")) <= 8
+        assert float(canvas.cget("height")) <= 8
+        assert int(canvas.cget("highlightthickness")) == 0
+        assert str(canvas.cget("highlightbackground")).lower() == str(btn.cget("bg")).lower()
+        polys = [i for i in canvas.find_all() if canvas.type(i) == "polygon"]
+        assert polys, name
+        xs = canvas.coords(polys[0])[0::2]
+        ys = canvas.coords(polys[0])[1::2]
+        assert min(xs) <= 1.0, name
+        assert max(xs) >= bw - 1.0, name
+        assert min(ys) <= 1.0, name
+        assert max(ys) >= bh - 1.0, name
+        assert btn._corner_radius(bw, bh) >= min(bw, bh) / 2.0 - 0.5  # noqa: SLF001
 
 
 def test_main_window_is_not_a_motion_or_gcode_client() -> None:
