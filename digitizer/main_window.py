@@ -16,6 +16,7 @@ from digitizer.chrome import (
     MessageLog,
     PillButton,
     ProbeLamp,
+    RoundedFrame,
     TealCard,
     ToggleButton,
     pressable_entry,
@@ -99,7 +100,9 @@ class MainWindow(tk.Tk):
     def click_control(self, name: str) -> None:
         """Test helper: press a registered control so it logs ``'{name} pressed'``."""
         widget = self.controls[name]
-        if isinstance(widget, (tk.Button, tk.Radiobutton)):
+        if isinstance(widget, tk.Radiobutton):
+            widget.invoke()
+        elif isinstance(widget, PillButton):
             widget.invoke()
         elif isinstance(widget, ProbeLamp):
             widget._release()  # noqa: SLF001 — same path as mouse release
@@ -169,21 +172,21 @@ class MainWindow(tk.Tk):
     def _build_tabs(self) -> None:
         bar = tk.Frame(self, bg=T.PAGE_BG)
         bar.grid(row=0, column=0, sticky="w", padx=12, pady=(10, 4))
-        self._tab_main = PillButton(bar, "Main", self.log, command=self._show_main)
-        self._tab_main.configure(relief="sunken")
+        self._tab_main = PillButton(bar, "Main", self.log, command=self._show_main, radius=T.RADIUS_TAB)
+        self._tab_main.set_selected(True)
         self._tab_main.pack(side="left")
-        self._tab_hotkeys = PillButton(bar, "Hotkeys", self.log, command=self._open_hotkeys)
+        self._tab_hotkeys = PillButton(bar, "Hotkeys", self.log, command=self._open_hotkeys, radius=T.RADIUS_TAB)
         self._tab_hotkeys.pack(side="left", padx=(6, 0))
         self._remember("Main", self._tab_main)
         self._remember("Hotkeys", self._tab_hotkeys)
 
     def _show_main(self) -> None:
-        self._tab_main.configure(relief="sunken")
-        self._tab_hotkeys.configure(relief="raised")
+        self._tab_main.set_selected(True)
+        self._tab_hotkeys.set_selected(False)
 
     def _open_hotkeys(self) -> None:
-        self._tab_hotkeys.configure(relief="sunken")
-        self._tab_main.configure(relief="raised")
+        self._tab_hotkeys.set_selected(True)
+        self._tab_main.set_selected(False)
         if self._hotkeys is not None and self._hotkeys.winfo_exists():
             self._hotkeys.lift()
             self._hotkeys.focus_set()
@@ -205,12 +208,14 @@ class MainWindow(tk.Tk):
             bar,
             "Initialized",
             self.log,
+            pill=True,
             bg=T.GREEN,
             fg=T.GREEN_FG,
             activebackground=T.GREEN_ACTIVE,
             activeforeground=T.GREEN_FG,
             font=T.FONT_BOLD,
-            padx=16,
+            padx=18,
+            pady=6,
         )
         init.pack(side="left")
         self._remember("Initialized", init)
@@ -240,13 +245,15 @@ class MainWindow(tk.Tk):
         body.columnconfigure(1, weight=0)
         axes = (("X", self._dro_x), ("Y", self._dro_y), ("Z", self._dro_z))
         for i, (axis, var) in enumerate(axes):
-            chip = tk.Frame(body, bg=T.DRO_CHIP_BG, highlightbackground=T.BORDER, highlightthickness=1)
+            chip = RoundedFrame(
+                body, radius=T.RADIUS_CHIP, fill=T.DRO_CHIP_BG, outline=T.BORDER
+            )
             chip.grid(row=i, column=0, sticky="ew", pady=3, padx=(0, 8))
             pressable_label(
-                chip, f"{axis}:", self.log, f"DRO {axis}", bg=T.DRO_CHIP_BG, font=T.FONT_DRO, bd=0, relief="flat"
-            ).pack(side="left", padx=(6, 4))
+                chip.inner, f"{axis}:", self.log, f"DRO {axis}", bg=T.DRO_CHIP_BG, font=T.FONT_DRO
+            ).pack(side="left", padx=(4, 4))
             val = tk.Label(
-                chip,
+                chip.inner,
                 textvariable=var,
                 bg=T.DRO_CHIP_BG,
                 fg=T.LABEL_FG,
@@ -254,16 +261,16 @@ class MainWindow(tk.Tk):
                 width=8,
                 anchor="w",
                 cursor="hand2",
-                relief="raised",
-                bd=1,
+                relief="flat",
+                bd=0,
             )
-            val.pack(side="left", padx=(0, 6), pady=4)
+            val.pack(side="left", padx=(0, 4), pady=2)
 
             def _down(_e: object, w: tk.Label = val) -> None:
-                w.configure(relief="sunken")
+                w.configure(fg=T.HIGHLIGHT)
 
             def _up(_e: object, w: tk.Label = val, name: str = f"DRO {axis}") -> None:
-                w.configure(relief="raised")
+                w.configure(fg=T.LABEL_FG)
                 self.log(name)
 
             val.bind("<ButtonPress-1>", _down, add="+")
@@ -289,9 +296,9 @@ class MainWindow(tk.Tk):
             row = tk.Frame(body, bg=T.CARD_BG)
             row.pack(fill="x", pady=2)
             pressable_label(
-                row, f"{key}:", self.log, key, bg=T.CARD_BG, bd=1, width=10, anchor="w"
+                row, f"{key}:", self.log, key, bg=T.CARD_BG, width=10, anchor="w"
             ).pack(side="left")
-            val = pressable_label(row, value, self.log, key, bg=T.CARD_BG, bd=1, width=8, anchor="w")
+            val = pressable_label(row, value, self.log, key, bg=T.CARD_BG, width=8, anchor="w")
             val.pack(side="left", padx=8)
             self._remember(key, val)
 
@@ -337,9 +344,9 @@ class MainWindow(tk.Tk):
             showvalue=0,
             bg=T.CARD_BG,
             highlightthickness=0,
-            troughcolor="#99e6dd",
-            sliderrelief="raised",
-            bd=2,
+            troughcolor=T.TROUGH,
+            sliderrelief="flat",
+            bd=0,
             command=lambda _v: self._speed_readout.set(f"{self._jog_speed.get():.3f} in/sec"),
         )
         scale.pack(fill="x")
@@ -405,7 +412,7 @@ class MainWindow(tk.Tk):
         self._remember("Capture Z Height", cap_z)
         self._remember("Lock Z", lock)
         zval = pressable_label(
-            zcard.body, "", self.log, "Z Value", textvariable=self._z_value, bg=T.CARD_BG, bd=1
+            zcard.body, "", self.log, "Z Value", textvariable=self._z_value, bg=T.CARD_BG
         )
         zval.pack(pady=(8, 0))
         self._remember("Z Value", zval)
@@ -460,7 +467,6 @@ class MainWindow(tk.Tk):
             "Measured Diameter",
             textvariable=self._diameter,
             bg=T.PAGE_BG,
-            bd=1,
             anchor="w",
         )
         diam.pack(fill="x", pady=(4, 0))
@@ -499,16 +505,17 @@ class MainWindow(tk.Tk):
 
     def _build_sim_bar(self) -> None:
         """Live SimulatedPosition sliders so the preview Z-circle/grid stay alive."""
-        bar = tk.Frame(self, bg=T.CARD_BG, highlightbackground=T.BORDER, highlightthickness=1)
+        bar = RoundedFrame(self, radius=T.RADIUS_CHIP, fill=T.CARD_BG, outline=T.BORDER)
         bar.grid(row=3, column=0, sticky="ew", padx=10, pady=(0, 10))
         self._sim_bar = bar
+        inner = bar.inner
         tk.Label(
-            bar,
+            inner,
             text="Simulated position (not GRBL, not USB)",
             bg=T.CARD_BG,
             fg=T.MUTED_FG,
             font=T.FONT_SMALL,
-        ).pack(side="left", padx=(8, 10))
+        ).pack(side="left", padx=(4, 10))
 
         self._x_var = tk.DoubleVar(value=self.position.get_xyz()[0])
         self._y_var = tk.DoubleVar(value=self.position.get_xyz()[1])
@@ -518,9 +525,9 @@ class MainWindow(tk.Tk):
             self.position.set_xyz(self._x_var.get(), self._y_var.get(), self._z_var.get())
 
         def _axis(label: str, var: tk.DoubleVar, lo: float, hi: float) -> None:
-            tk.Label(bar, text=label, bg=T.CARD_BG, font=T.FONT_SMALL).pack(side="left")
+            tk.Label(inner, text=label, bg=T.CARD_BG, font=T.FONT_SMALL).pack(side="left")
             scale = tk.Scale(
-                bar,
+                inner,
                 from_=lo,
                 to=hi,
                 resolution=0.001,
@@ -529,6 +536,9 @@ class MainWindow(tk.Tk):
                 showvalue=0,
                 bg=T.CARD_BG,
                 highlightthickness=0,
+                troughcolor=T.TROUGH,
+                sliderrelief="flat",
+                bd=0,
                 length=140,
                 command=lambda _v: _push(),
             )
@@ -549,9 +559,9 @@ class MainWindow(tk.Tk):
             self.session.dxf_origin = filled.dxf_origin
             self.preview.set_session(self.session)
 
-        empty = PillButton(bar, "Empty file", self.log, command=show_empty)
+        empty = PillButton(inner, "Empty file", self.log, command=show_empty)
         empty.pack(side="left", padx=(8, 0))
-        sample = PillButton(bar, "Sample captures", self.log, command=show_sample)
+        sample = PillButton(inner, "Sample captures", self.log, command=show_sample)
         sample.pack(side="left", padx=8)
         self._remember("Empty file", empty)
         self._remember("Sample captures", sample)

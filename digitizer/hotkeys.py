@@ -51,7 +51,7 @@ class HotkeysWindow(tk.Toplevel):
         self.geometry("720x520")
         self.minsize(560, 420)
         self.logger = logger
-        self.bind_boxes: dict[str, tk.Entry] = {}
+        self.bind_boxes: dict[str, tk.Misc] = {}
 
         card = TealCard(self, "Hotkeys", logger=logger)
         card.pack(fill="both", expand=True, padx=10, pady=10)

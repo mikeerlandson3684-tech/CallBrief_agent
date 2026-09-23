@@ -9,6 +9,7 @@ from __future__ import annotations
 import tkinter as tk
 from collections.abc import Callable
 
+from digitizer import theme as T
 from digitizer.machine_config import WorkingEnvelope, default_envelope, envelope_disclaimer
 from digitizer.position import PositionSource, SimulatedPosition
 from digitizer.preview_geom import (
@@ -20,18 +21,18 @@ from digitizer.preview_geom import (
 from digitizer.session import CaptureSession, CapturedCircle
 
 # Colors are example UI chrome, not a cycle spec and not the PNG glyph.
-_BG = "#f8fafc"
+_BG = T.PAGE_BG
 _CANVAS_BG = "#ffffff"
-_GRID = "#d9e2ec"
+_GRID = "#d5e4e2"
 _BORDER = "#334155"
 _LABEL = "#475569"
 _PROBE_FILL = "#99f6e4"
-_PROBE_OUTLINE = "#0f766e"
+_PROBE_OUTLINE = T.HIGHLIGHT
 _ID = "#2563eb"
 _OD = "#7c3aed"
 _ORIGIN = "#111827"
 _ZMARK = "#b45309"
-_HEADER = "#d1fae5"
+_HEADER = T.HEADER_BG
 
 
 class DxfPreview(tk.Frame):
@@ -67,13 +68,13 @@ class DxfPreview(tk.Frame):
                 header,
                 text="DXF Preview",
                 bg=_HEADER,
-                fg="#064e3b",
+                fg=T.HEADER_FG,
                 font=("Segoe UI", 12, "bold"),
             ).pack(side="left")
-            tk.Label(header, textvariable=self._xyz_var, bg=_HEADER, fg="#115e59").pack(side="right")
+            tk.Label(header, textvariable=self._xyz_var, bg=_HEADER, fg=T.HEADER_FG).pack(side="right")
             row += 1
         else:
-            xyz = tk.Label(self, textvariable=self._xyz_var, bg=_BG, fg="#115e59", font=("Segoe UI", 8))
+            xyz = tk.Label(self, textvariable=self._xyz_var, bg=_BG, fg=T.HEADER_FG, font=("Segoe UI", 8))
             xyz.grid(row=row, column=0, sticky="e", padx=8)
             row += 1
 

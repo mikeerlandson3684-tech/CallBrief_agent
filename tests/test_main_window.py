@@ -205,6 +205,39 @@ def test_destroy_cancels_dro_poll() -> None:
     win2.destroy()
 
 
+def test_theme_is_teal_not_mint() -> None:
+    from digitizer import theme as T
+
+    assert T.HEADER_BG.lower() != "#d1fae5"
+    r = int(T.HEADER_BG[1:3], 16)
+    b = int(T.HEADER_BG[5:7], 16)
+    assert b >= r  # teal/cyan, not mint-green
+
+
+def test_buttons_and_cards_are_rounded_not_raised_tk(app: MainWindow) -> None:
+    from digitizer.chrome import PillButton, TealCard
+
+    cap = app.controls["Capture Feature"]
+    init = app.controls["Initialized"]
+    preview_card = app.controls["DXF Preview"]
+    assert isinstance(cap, PillButton)
+    assert isinstance(init, PillButton)
+    assert not isinstance(cap, tk.Button)
+    assert init._pill is True  # noqa: SLF001
+    assert str(tk.Frame.cget(init, "relief")) == "flat"
+    assert isinstance(preview_card, TealCard)
+    assert preview_card._radius >= 12  # noqa: SLF001
+    canvases = [w for w in cap.winfo_children() if isinstance(w, tk.Canvas)]
+    assert canvases, "pill buttons draw on a canvas"
+    app.update_idletasks()
+    app.update()
+    # Capsule Initialized: corner radius is half the height.
+    h = init.winfo_height()
+    w = init.winfo_width()
+    assert h > 8 and w > h
+    assert init._corner_radius(w, h) >= h / 2 - 2  # noqa: SLF001
+
+
 def test_main_window_is_not_a_motion_or_gcode_client() -> None:
     from digitizer import chrome, hotkeys, main_window
 

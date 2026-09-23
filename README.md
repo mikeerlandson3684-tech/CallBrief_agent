@@ -85,7 +85,8 @@ digitizer/
   session.py          # current-file captures (ID/OD, Z, origin)
   preview_geom.py     # envelope fit, grid, Z→radius
   preview.py          # Tkinter DxfPreview widget
-  chrome.py           # teal cards, pressable buttons, message log
+  chrome.py           # teal (not mint) rounded cards, pills, chips
+  theme.py            # teal palette + corner radii
   main_window.py      # paralyzed three-column GUI
   hotkeys.py          # stub bind-box window
   demo_app.py         # standalone preview (`--preview-only`)
