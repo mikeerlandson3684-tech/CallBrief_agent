@@ -51,6 +51,13 @@ def _arc_pts(cx: float, cy: float, r: float, a0: float, a1: float, step: float =
     return pts
 
 
+# 1px stroke fully inside the canvas. X11 clips the last canvas row/column, so a
+# polygon outline sitting on (w-0.5, h-0.5) loses the bottom and right sides
+# (and can drop other edges / corner joins). Closed create_line + this inset
+# keeps the ring complete on all four sides.
+STROKE_INSET = 1.0
+
+
 def _filled_shape_kwargs(kwargs: dict[str, Any], *, polygon: bool) -> dict[str, Any]:
     """Tk polygons with an empty outline can skip a fill; match fill when needed."""
     out = dict(kwargs)
@@ -65,6 +72,86 @@ def _filled_shape_kwargs(kwargs: dict[str, Any], *, polygon: bool) -> dict[str, 
     return out
 
 
+def _ring_tags(tags: Any) -> Any:
+    if not tags:
+        return "ring"
+    if isinstance(tags, str):
+        return (tags, "ring")
+    return tuple(tags) + ("ring",)
+
+
+def _split_stroke(kwargs: dict[str, Any]) -> tuple[str | None, float, dict[str, Any]]:
+    """Pull a visible ring off fill kwargs. Width 0 is the fill-workaround, not a ring."""
+    out = dict(kwargs)
+    outline = out.pop("outline", None)
+    width = out.pop("width", 1)
+    try:
+        stroke_w = float(width if width is not None else 0)
+    except (TypeError, ValueError):
+        stroke_w = 0.0
+    if outline in ("", None) or stroke_w <= 0:
+        return None, 0.0, out
+    return str(outline), stroke_w, out
+
+
+def _round_rect_pts(x1: float, y1: float, x2: float, y2: float, radius: float) -> list[float] | None:
+    """Corner-arc points, or None when the box should be a plain rectangle."""
+    if x2 <= x1 or y2 <= y1:
+        return None
+    r = min(float(radius), (x2 - x1) / 2.0, (y2 - y1) / 2.0)
+    if r <= 0.6:
+        return None
+    pts: list[float] = []
+    pts.extend(_arc_pts(x2 - r, y1 + r, r, -90, 0))
+    pts.extend(_arc_pts(x2 - r, y2 - r, r, 0, 90))
+    pts.extend(_arc_pts(x1 + r, y2 - r, r, 90, 180))
+    pts.extend(_arc_pts(x1 + r, y1 + r, r, 180, 270))
+    return pts
+
+
+def _safe_stroke_box(
+    x1: float, y1: float, x2: float, y2: float, pad: float
+) -> tuple[float, float, float, float]:
+    """Concentric ring that does not sit on the clipped last row/column."""
+    outer_w = x2 + max(x1, 0.0)
+    outer_h = y2 + max(y1, 0.0)
+    sx1, sy1 = pad, pad
+    sx2, sy2 = outer_w - pad, outer_h - pad
+    if sx2 - sx1 < 2 or sy2 - sy1 < 2:
+        return x1, y1, x2, y2
+    return sx1, sy1, sx2, sy2
+
+
+def stroke_round_rect(
+    canvas: tk.Canvas,
+    x1: float,
+    y1: float,
+    x2: float,
+    y2: float,
+    radius: float,
+    *,
+    outline: str,
+    width: float = 1.0,
+    tags: Any = (),
+) -> int:
+    """Closed outline as a line so Tk cannot drop a polygon edge or corner."""
+    pad = max(float(width) / 2.0, STROKE_INSET)
+    sx1, sy1, sx2, sy2 = _safe_stroke_box(x1, y1, x2, y2, pad)
+    r = min(float(radius), (sx2 - sx1) / 2.0, (sy2 - sy1) / 2.0)
+    pts = _round_rect_pts(sx1, sy1, sx2, sy2, r)
+    kw: dict[str, Any] = {
+        "fill": outline,
+        "width": width,
+        "joinstyle": "round",
+        "capstyle": "round",
+        "smooth": False,
+        "tags": _ring_tags(tags),
+    }
+    if pts is None:
+        return canvas.create_line(sx1, sy1, sx2, sy1, sx2, sy2, sx1, sy2, sx1, sy1, **kw)
+    return canvas.create_line(*pts, pts[0], pts[1], **kw)
+
+
 def round_rect(
     canvas: tk.Canvas,
     x1: float,
@@ -74,18 +161,31 @@ def round_rect(
     radius: float,
     **kwargs: Any,
 ) -> int:
-    """Stadium / rounded rect that reaches the given box (no side gutters)."""
-    if x2 <= x1 or y2 <= y1:
-        return canvas.create_rectangle(x1, y1, x2, y2, **kwargs)
-    r = min(float(radius), (x2 - x1) / 2.0, (y2 - y1) / 2.0)
-    if r <= 0.6:
-        return canvas.create_rectangle(x1, y1, x2, y2, **_filled_shape_kwargs(kwargs, polygon=False))
-    pts: list[float] = []
-    pts.extend(_arc_pts(x2 - r, y1 + r, r, -90, 0))
-    pts.extend(_arc_pts(x2 - r, y2 - r, r, 0, 90))
-    pts.extend(_arc_pts(x1 + r, y2 - r, r, 90, 180))
-    pts.extend(_arc_pts(x1 + r, y1 + r, r, 180, 270))
-    return canvas.create_polygon(pts, **_filled_shape_kwargs(kwargs, polygon=True))
+    """Stadium / rounded fill (no side gutters) plus a complete on-canvas ring."""
+    stroke, stroke_w, fill_kw = _split_stroke(kwargs)
+    tags = fill_kw.get("tags")
+    fill = fill_kw.get("fill")
+    item = -1
+    draw_fill = fill not in ("", None)
+    if draw_fill:
+        fill_kw = _filled_shape_kwargs(fill_kw, polygon=True)
+        if x2 <= x1 or y2 <= y1:
+            item = canvas.create_rectangle(x1, y1, x2, y2, **fill_kw)
+        else:
+            pts = _round_rect_pts(x1, y1, x2, y2, radius)
+            if pts is None:
+                item = canvas.create_rectangle(
+                    x1, y1, x2, y2, **_filled_shape_kwargs(fill_kw, polygon=False)
+                )
+            else:
+                item = canvas.create_polygon(pts, **fill_kw)
+    if stroke is not None:
+        ring = stroke_round_rect(
+            canvas, x1, y1, x2, y2, radius, outline=stroke, width=stroke_w, tags=tags
+        )
+        if item == -1:
+            item = ring
+    return item
 
 
 def round_top_rect(
@@ -257,8 +357,8 @@ class TealCard(tk.Frame):
             y2,
             r,
             fill=T.CARD_BG,
-            outline=T.BORDER,
-            width=1,
+            outline="",
+            width=0,
             tags="card",
         )
         hh = self._header_bottom(h)
@@ -411,19 +511,21 @@ class PillButton(tk.Frame):
             fill=self._fill_now(),
             outline="",
             width=0,
+            tags="pill",
         )
-        ring = max(inset, 0.5)
-        ring_r = max(self._corner_radius(w, h) - ring, 1.0)
+        # Ring is edge-safe inside round_rect (closed line, not a hollow
+        # polygon) so bottom/right/left/top and corner joins all paint.
         round_rect(
             self._canvas,
-            ring,
-            ring,
-            w - ring,
-            h - ring,
-            ring_r,
+            0.5,
+            0.5,
+            w - 0.5,
+            h - 0.5,
+            self._corner_radius(w, h),
             fill="",
             outline=self._outline_now(),
             width=1,
+            tags="pill",
         )
         self._canvas.create_text(
             w / 2,

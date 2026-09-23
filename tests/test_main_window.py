@@ -314,6 +314,87 @@ def test_teal_card_header_band_is_edge_to_edge(app: MainWindow) -> None:
         assert min_y <= 2, f"{title}: header fill starts at {min_y}"
 
 
+def _chrome_widgets(widget: tk.Misc) -> list[tk.Misc]:
+    from digitizer.chrome import PillButton, RoundedFrame, TealCard
+
+    found: list[tk.Misc] = []
+    if isinstance(widget, (TealCard, RoundedFrame, PillButton)):
+        found.append(widget)
+    for child in widget.winfo_children():
+        found.extend(_chrome_widgets(child))
+    return found
+
+
+def test_safe_stroke_box_insets_every_side() -> None:
+    from digitizer.chrome import STROKE_INSET, _safe_stroke_box
+
+    x1, y1, x2, y2 = _safe_stroke_box(0.5, 0.5, 299.5, 199.5, STROKE_INSET)
+    assert (x1, y1, x2, y2) == (1.0, 1.0, 299.0, 199.0)
+
+
+def test_chrome_outlines_close_on_all_four_sides(app: MainWindow) -> None:
+    """Ring is a closed line inset from the canvas edge on every side, not a clipped polygon."""
+    from digitizer.chrome import PillButton, RoundedFrame, TealCard
+    from digitizer import theme as T
+
+    assert T.HEADER_BG.lower() == "#c5ece8"
+    assert T.BORDER.lower() == "#b7d4d0"
+
+    app.update_idletasks()
+    app.update()
+    widgets = _chrome_widgets(app)
+    kinds = {type(w).__name__ for w in widgets}
+    assert "TealCard" in kinds
+    assert "PillButton" in kinds
+    assert "RoundedFrame" in kinds
+    titles = [
+        str(w.title_label.cget("text"))  # type: ignore[attr-defined]
+        for w in widgets
+        if isinstance(w, TealCard)
+    ]
+    for need in (
+        "DRO Position",
+        "Status",
+        "Jog",
+        "Feature",
+        "Capture",
+        "Z Control",
+        "Datum",
+        "Incremental",
+        "DXF Preview",
+        "Messages",
+    ):
+        assert need in titles, titles
+
+    checked = 0
+    for widget in widgets:
+        canvas = getattr(widget, "_canvas", None)
+        if canvas is None:
+            continue
+        bw, bh = widget.winfo_width(), widget.winfo_height()
+        if bw < 12 or bh < 12:
+            continue
+        rings = list(canvas.find_withtag("ring"))
+        assert rings, f"{widget}: no outline ring"
+        for item in rings:
+            assert canvas.type(item) == "line", f"{widget}: outline is {canvas.type(item)}, not line"
+            coords = canvas.coords(item)
+            assert len(coords) >= 10, f"{widget}: outline too short {len(coords)}"
+            assert abs(coords[0] - coords[-2]) < 0.05, f"{widget}: outline not closed x"
+            assert abs(coords[1] - coords[-1]) < 0.05, f"{widget}: outline not closed y"
+            xs, ys = coords[0::2], coords[1::2]
+            assert min(xs) >= 0.9, f"{widget}: left stroke at {min(xs)} would clip"
+            assert min(ys) >= 0.9, f"{widget}: top stroke at {min(ys)} would clip"
+            assert max(xs) <= bw - 0.9, f"{widget}: right stroke at {max(xs)} of {bw} would clip"
+            assert max(ys) <= bh - 0.9, f"{widget}: bottom stroke at {max(ys)} of {bh} would clip"
+            assert min(xs) <= 2.5, f"{widget}: left side missing ({min(xs)})"
+            assert min(ys) <= 2.5, f"{widget}: top side missing ({min(ys)})"
+            assert max(xs) >= bw - 2.5, f"{widget}: right side missing ({max(xs)} vs {bw})"
+            assert max(ys) >= bh - 2.5, f"{widget}: bottom side missing ({max(ys)} vs {bh})"
+        checked += 1
+    assert checked >= 20, f"too few outlined widgets checked: {checked}"
+
+
 def test_main_window_is_not_a_motion_or_gcode_client() -> None:
     from digitizer import chrome, hotkeys, main_window
 
