@@ -151,7 +151,7 @@ class RoundedFrame(tk.Frame):
         inset = _inset_for_radius(radius)
         self.inner = tk.Frame(self, bg=fill, highlightthickness=0, bd=0)
         self.inner.pack(fill="both", expand=True, padx=inset, pady=inset)
-        self._canvas.lower()
+        tk.Misc.lower(self._canvas)
         self.bind("<Configure>", self._redraw, add="+")
 
     def _redraw(self, _event: tk.Event | None = None) -> None:  # type: ignore[type-arg]
@@ -212,7 +212,7 @@ class TealCard(tk.Frame):
 
         self.body = tk.Frame(self, bg=T.CARD_BG, highlightthickness=0, bd=0)
         self.body.pack(fill="both", expand=True, padx=inset, pady=(4, inset))
-        self._canvas.lower()
+        tk.Misc.lower(self._canvas)
         self.bind("<Configure>", self._redraw, add="+")
 
     def _redraw(self, _event: tk.Event | None = None) -> None:  # type: ignore[type-arg]
@@ -361,7 +361,7 @@ class PillButton(tk.Frame):
         tk.Frame.configure(self, bg=parent)
         _paint_canvas(self._canvas, parent)
         # Press shrinks the fill slightly; idle fills the widget so no side gutters.
-        inset = 1.5 if self._pressed else 0.5
+        inset = 1.5 if self._pressed else 0.0
         radius = self._corner_radius(w, h)
         if inset:
             radius = max(radius - inset, 1.0)
@@ -373,6 +373,19 @@ class PillButton(tk.Frame):
             h - inset,
             radius,
             fill=self._fill_now(),
+            outline="",
+            width=0,
+        )
+        ring = max(inset, 0.5)
+        ring_r = max(self._corner_radius(w, h) - ring, 1.0)
+        round_rect(
+            self._canvas,
+            ring,
+            ring,
+            w - ring,
+            h - ring,
+            ring_r,
+            fill="",
             outline=self._outline_now(),
             width=1,
         )
