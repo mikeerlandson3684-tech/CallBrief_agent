@@ -51,7 +51,7 @@ Measurement intent and stylus offset math: Cursor project store `docs/probing-ro
 
 Accuracy/precision (fail-closed, **not** a work-order): Cursor project store `docs/accuracy-gates.md`. Numeric capture/display **±0.002 in**. Visual close needs Mike. Agents do not close iteration-sheet rows. One lock cluster per pass.
 
-Motion / LS / H4 precheck / allowed-jog table: Cursor project store `docs/motion-rules.md` (H4 Mike **OK**; per-axis table, not a 3D graph). **Home is a location.** An **LS** is pressed or cleared. The jog-pad control **starts the homing routine**. Owner: **Mr. Motion**.
+Motion / LS / H4 precheck / allowed-jog table: Cursor project store `docs/motion-rules.md` (H4 Mike **OK**; per-axis table, not a 3D graph; **GRBL rides** — do not build what fights `$H` `$J` `?` alarms limits). **Home is a location.** An **LS** is pressed or cleared. The jog-pad control **starts the homing routine**. Owner: **Mr. Motion**.
 
 **Version requirements/test log is in this tree:** [`docs/version-log.md`](version-log.md), current sheet [`docs/iterations/0.2.0.md`](iterations/0.2.0.md). Screenshots, GUI-direction specs, and accuracy gates remain in the store.
 

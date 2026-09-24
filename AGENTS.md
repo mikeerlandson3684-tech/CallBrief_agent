@@ -36,6 +36,8 @@ Wake **only** when Mike asks, or the current iteration sheet has a motion/LS row
 
 H4 precheck and the per-axis table are Mike **OK**. Home is a location. An LS is pressed/cleared. Never write “Home is pressed.”
 
+**GRBL rides:** If an idea conflicts with `$H`, `$J`, `?`, alarms, limits, **do not build it**. Flag the conflict; use the existing GRBL command/setting. Operator intent can lock; implementation must ride GRBL. No host walk / custom protocol / invented sequencer that fights the firmware.
+
 ## Wake Mr. Fix-it on the whole system
 
 Current version: [`VERSION`](VERSION) (**0.2.0**). **0.2.0** is a **minor** bump: first paralyzed main window (new screen on PR 6). **The Project coordinator decides patch vs minor vs major. Mike does not classify.** Mr. Fix-it does not bump `VERSION`. He runs version-sweeps on **minor and major only** (woken separately for 0.2.0). **Every `VERSION` bump must update [`docs/version-log.md`](docs/version-log.md)** (index + section or [`docs/iterations/<VERSION>.md`](docs/iterations/0.2.0.md)). **Mr. Fix-it and the verification specialist test against the current iteration sheet.**
@@ -67,6 +69,7 @@ Not a work-order system. Full rules: Cursor project store `docs/accuracy-gates.m
 - Do not tell Mike a lock is met without evidence in hand (screenshot path, pytest, measurement). “Looks good” / “Tk approximation” is fail.
 - Visual: screenshot vs mockup/sheet. **Mike’s Try Live / eye rejects even if Fix-it passed.** 0.2.0 visual (rounded fill, no gutters) stays open until Mike accepts.
 - Numeric: captured or displayed length/position **±0.002 in** unless Mike sets another. Tests must assert that tolerance. No eyeball numbers.
+- Motion authority: if a proposed implementation fights GRBL `$H` `$J` `?` alarms/limits, **do not build it** (store `docs/accuracy-gates.md` rule 8; `docs/motion-rules.md`).
 - Changed locks: update the iteration sheet **first**, then code. Chat memory is not the spec.
 - Grafix = graphics only (reports to Fix-it). **Mr. Motion** = motion/LS rules (reports to Fix-it; graphics-none). Fix-it = non-graphic bugs + review. Verifier = test against the current sheet. **None of them close a row**; coordinator closes only with evidence; **visual close needs Mike**.
 - One lock cluster per pass, not the whole window.

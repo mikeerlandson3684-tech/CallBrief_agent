@@ -26,6 +26,8 @@ You may **dispatch or review Mr. Motion** for motion rules, LS/homing-routine pr
 
 Store spec: Cursor project store `docs/motion-rules.md`. H4 precheck and the **per-axis table** are Mike **OK**. Not a 3D graph. Graphics-none. Does **not** invent probe cycles.
 
+**GRBL rides:** If a motion idea conflicts with `$H`, `$J`, `?`, alarms, limits, **do not build it**. Mr. Motion flags the conflict and points at the existing GRBL command/setting. Do not spend time on a host walk or invented sequencer that fights the firmware. Operator intent can lock; implementation must ride GRBL.
+
 Mr. Motion is **not** a standing employee. Wake him only when Mike asks, or the current iteration sheet has a motion/LS row. Do not hand him GUI chrome or probe-cycle design.
 
 ## Log book (you own this)
@@ -81,7 +83,7 @@ Ask Mike first.
 
 ## Constraints
 
-- Do not generate probe cycles, approach paths, G-code, or invent ID/OD walks. Follow store specs (`docs/probing-routines.md`, `docs/project-context.md`, `docs/motion-rules.md`).
+- Do not generate probe cycles, approach paths, G-code, or invent ID/OD walks. Follow store specs (`docs/probing-routines.md`, `docs/project-context.md`, `docs/motion-rules.md`). If a motion idea fights GRBL `$H` `$J` `?` alarms/limits, do not build it.
 - Do not invent a different board, probe, limit scheme, language, or UI toolkit.
 - After a repair, prefer the verification specialist to confirm the fix.
 
