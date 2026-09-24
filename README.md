@@ -20,11 +20,12 @@ Desktop program on the laptop: **Python**, with **Tkinter as the starting UI def
 
 How agents work on this repo: [`AGENTS.md`](AGENTS.md)
 
-Custom agents (organizer + verifier + Mr. Fix-it + Mr. Grafix; Grafix reports to Fix-it, graphics only):
+Custom agents (organizer + verifier + Mr. Fix-it + Mr. Grafix + Mr. Motion; Grafix and Motion report to Fix-it; Motion is graphics-none, motion/LS rules):
 
 - [`.cursor/agents/repository-organizer.md`](.cursor/agents/repository-organizer.md)
 - [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md)
 - [`.cursor/agents/mr-grafix.md`](.cursor/agents/mr-grafix.md)
+- [`.cursor/agents/mr-motion.md`](.cursor/agents/mr-motion.md)
 - [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md)
 
 Current layout: [`docs/project-map.md`](docs/project-map.md). Version: [`VERSION`](VERSION) (**0.2.0**). Requirements/test log: [`docs/version-log.md`](docs/version-log.md) (current sheet [`docs/iterations/0.2.0.md`](docs/iterations/0.2.0.md)). Mr. Fix-it’s log: [`docs/fix-it-log.md`](docs/fix-it-log.md).
