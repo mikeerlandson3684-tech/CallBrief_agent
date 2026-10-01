@@ -26,7 +26,7 @@ python3 -m pytest tests                # geometry + widget tests
 
 Toolbar includes **Save** and **Close** (decided; omitted from the mockup PNG). **Bridge: COMx** is dropped. Feature entry is **ID Circle** and **OD Circle** as separate paralyzed controls (no Circle/Rectangle toggle, no Inner/Outer finder). Stylus diameter is not on this screen. **Hotkeys** opens a stub bind-box window (click a box; no real key capture yet).
 
-Simulated XYZ sliders in the preview card are a stub until a DRO / GRBL `?` status reader implements the same `PositionSource.get_xyz()` contract in `digitizer/position.py`. They are not jogging and not USB. Jog / GO TO buttons do **not** move the stub.
+Simulated XYZ sliders in the preview card are a stub until a DRO / GRBL `?` status reader implements the same `PositionSource.get_xyz()` contract in `digitizer/position.py`. They are not jogging and not USB. Jog / pad **Home** / **GO TO** / **Home Machine** do **not** move the stub. Pad **Home** is go-to-0,0,0 later (not the homing routine). **Home Machine** (Origins card, left of **Set DXF Origin**) starts the homing routine later. **GO TO** uses only the DRO X/Y/Z fields. Clicks log only.
 
 ### Envelope scale
 

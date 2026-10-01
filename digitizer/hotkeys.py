@@ -20,6 +20,7 @@ HOTKEY_TARGETS = (
     "Z+",
     "Z-",
     "Home",
+    "Home Machine",
     "GO TO",
     "ID Circle",
     "OD Circle",

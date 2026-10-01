@@ -51,6 +51,7 @@ REQUIRED_CONTROLS = (
     "Capture Z Height",
     "Lock Z",
     "Z Value",
+    "Home Machine",
     "Set DXF Origin",
     '.001"',
     '.010"',
@@ -123,10 +124,38 @@ def test_goto_and_jog_do_not_move(app: MainWindow) -> None:
     app.click_control("GO TO")
     app.click_control("Y+")
     app.click_control("Home")
+    app.click_control("Home Machine")
     app.click_control("FINISH PROBING")
     app.click_control("Capture Feature")
     app.click_control("New File")
     assert app.position.get_xyz() == before
+
+
+def test_origins_card_has_home_machine_left_of_set_dxf_origin(app: MainWindow) -> None:
+    from digitizer.chrome import TealCard
+
+    def _cards(widget: tk.Misc) -> list[TealCard]:
+        found: list[TealCard] = []
+        if isinstance(widget, TealCard):
+            found.append(widget)
+        for child in widget.winfo_children():
+            found.extend(_cards(child))
+        return found
+
+    titles = [c.title_label.cget("text") for c in _cards(app)]
+    assert "Origins" in titles
+    assert "Datum" not in titles
+    home = app.controls["Home Machine"]
+    origin = app.controls["Set DXF Origin"]
+    app.update_idletasks()
+    app.update()
+    assert home.winfo_rootx() < origin.winfo_rootx()
+    assert abs(home.winfo_rooty() - origin.winfo_rooty()) < 8
+    before = list(app.messages.lines)
+    app.click_control("Home Machine")
+    assert any(line == "Home Machine pressed" for line in app.messages.lines[len(before) :])
+    app.click_control("Home")
+    assert any(line == "Home pressed" for line in app.messages.lines)
 
 
 def test_preview_z_circle_still_grows(app: MainWindow) -> None:
@@ -359,7 +388,7 @@ def test_chrome_outlines_close_on_all_four_sides(app: MainWindow) -> None:
         "Feature",
         "Capture",
         "Z Control",
-        "Datum",
+        "Origins",
         "Incremental",
         "DXF Preview",
         "Messages",
@@ -405,6 +434,8 @@ def test_main_window_is_not_a_motion_or_gcode_client() -> None:
         assert "g38" not in lower
         assert "g90" not in lower
         assert "g91" not in lower
+        assert '"$H"' not in source
+        assert "'$H'" not in source
         assert "g-code" in lower or "grbl" in lower  # mentioned as what this is not
 
 

@@ -287,6 +287,7 @@ class MainWindow(tk.Tk):
             entry = pressable_entry(row, self.log, f"GO TO {axis}", textvariable=var, width=8)
             entry.pack(side="left")
             self._remember(f"GO TO {axis}", entry)
+        # GO TO uses only these X/Y/Z fields (absolute). Not pad Home. Log only.
         go = PillButton(goto, "GO TO", self.log)
         go.pack(pady=(6, 0), fill="x")
         self._remember("GO TO", go)
@@ -319,6 +320,8 @@ class MainWindow(tk.Tk):
 
         _jog("Y+", 0, 1)
         _jog("X-", 1, 0)
+        # Pad Home = go to accepted home 0,0,0 later. Not the homing routine.
+        # Paralyzed: log "Home pressed". Do not move SimulatedPosition. Do not $H.
         _jog("Home", 1, 1, font=T.FONT_JOG_HOME, width=6)
         _jog("X+", 1, 2)
         _jog("Y-", 2, 1)
@@ -418,10 +421,18 @@ class MainWindow(tk.Tk):
         zval.pack(pady=(8, 0))
         self._remember("Z Value", zval)
 
-        datum = TealCard(parent, "Datum", logger=self.log)
-        datum.pack(fill="x", pady=(0, 8))
-        origin = PillButton(datum.body, "Set DXF Origin", self.log, pady=8)
-        origin.pack()
+        origins = TealCard(parent, "Origins", logger=self.log)
+        origins.pack(fill="x", pady=(0, 8))
+        origin_row = tk.Frame(origins.body, bg=T.CARD_BG)
+        origin_row.pack(fill="x")
+        origin_row.columnconfigure(0, weight=1)
+        origin_row.columnconfigure(1, weight=1)
+        # Home Machine starts the homing routine later ($H after H4). Paralyzed: log only.
+        home_machine = PillButton(origin_row, "Home Machine", self.log, pady=8)
+        home_machine.grid(row=0, column=0, sticky="ew", padx=(0, 6))
+        origin = PillButton(origin_row, "Set DXF Origin", self.log, pady=8)
+        origin.grid(row=0, column=1, sticky="ew")
+        self._remember("Home Machine", home_machine)
         self._remember("Set DXF Origin", origin)
 
         inc = TealCard(parent, "Incremental", logger=self.log)
