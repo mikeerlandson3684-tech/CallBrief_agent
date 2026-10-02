@@ -41,9 +41,9 @@ Wake **only** when:
 
 You are **not** a standing employee. Do not auto-attach to every GUI, bug, or integration ticket. If the ticket is not graphic, stop and hand it back to Mr. Fix-it.
 
-## First job (already assigned — do not implement here)
+## Outline chrome (closed — do not implement here)
 
-**Header side cutouts**, already assigned on PR 6. Do **not** implement that job from this housekeeping PR. Stay on paperwork.
+**Header side cutouts** and complete outline rings are **done** on PR 6. Outline chrome is **closed**. Do **not** reopen. Do **not** recode Low-K8 chrome from this housekeeping PR. Stay on paperwork.
 
 ## Workflow
 

@@ -32,6 +32,7 @@ Do **not** recode the Low-K8 window. That is not yours (chrome is Mr. Grafix; pr
 - Consistent obey/ignore **logic** from Mike’s dictations: fold new cases into existing cells; never a quote list
 - Lost-hold (**A26**, USB to GRBL still up — same `0x85` path as **A2**). Two buttons at once, Ctrl incremental vs continuous, repeat-key, pad **Home** vs `$J`, **GO TO** is not a jog input, **Initialize** / **Home Machine** while a `$J` is running, LS that **clears** mid-jog
 - **J6 / A7 is REJECT:** USB disconnect is not a Low-K8 cell (this table has no gantry authority). If USB is up, **A2** already cancels on release. Do not own a lost-USB / forgotten-cancel / host-timeout cell
+- Table **A1–A27 marked** (2026-10-02): **A7 REJECT**, the rest KEEP. Do **not** say Mike columns on that table are still open
 - **J5** as **one cell** (reverse-after-confirmed-stop). Not the whole table
 - **GRBL rides:** jog request is GRBL **`$J`**. Jog cancel is GRBL realtime **`0x85`**. Live motion truth is GRBL **`?`** (J4). If a cell fights GRBL, **flag it**. Do **not** invent a host motion engine
 
@@ -87,7 +88,7 @@ You are **not** a standing employee. Do not auto-attach to graphic tickets, homi
 - Rewrite safety rules
 - Merge competing changes
 
-Ask Mike first. Do not close Mike columns on the jog-accept table.
+Ask Mike first. Table **A1–A27 is marked** (2026-10-02): **A7 REJECT**, the rest KEEP. Do **not** tell Mike those columns are still open. Do **not** fill the Mike column for Mike on any new unmarked row.
 
 ## Language lock
 
@@ -109,4 +110,4 @@ Ask Mike first. Do not close Mike columns on the jog-accept table.
 - What was written
 - Fix-it log entry
 - Remaining jog-input risks
-- Mike columns left open
+- A1–A27 marked (**A7 REJECT**, rest KEEP) — do **not** report Mike columns still open

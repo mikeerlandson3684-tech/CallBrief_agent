@@ -53,9 +53,9 @@ Measurement intent and stylus offset math: Cursor project store `docs/probing-ro
 
 Accuracy/precision (fail-closed, **not** a work-order): Cursor project store `docs/accuracy-gates.md`. Numeric capture/display **±0.002 in**. Visual close needs Mike. Agents do not close iteration-sheet rows. One lock cluster per pass.
 
-Motion / LS / H4 precheck / allowed-jog table: Cursor project store `docs/motion-rules.md` (H4 Mike **OK**; per-axis table, not a 3D graph; **GRBL rides** — do not build what fights `$H` `$J` `?` alarms limits). **Home is a location.** An **LS** is pressed or cleared. The jog-pad control **starts the homing routine**. Owner: **Mr. Motion**.
+Motion / LS / H4 precheck / allowed-jog table: Cursor project store `docs/motion-rules.md` (H4 Mike **OK**; per-axis table, not a 3D graph; **GRBL rides** — do not build what fights `$H` `$J` `?` alarms limits). **Home is a location.** An **LS** is pressed or cleared. Jog-pad **Home** goes to accepted home **0,0,0** (not `$H`). **Initialize** (chip green) auto-starts the homing routine. **Home Machine** is a later re-home. Do **not** write that the jog-pad control starts the homing routine. Owner: **Mr. Motion**.
 
-Jog-input obey/ignore (press / hold / release / reverse / lost-hold): Cursor project store `docs/jog-accept-rules.md`. Owner: **Mr. Jog**. **J5** is one cell. Does not own homing, H4, or the per-axis LS table.
+Jog-input obey/ignore (press / hold / release / reverse / lost-hold): Cursor project store `docs/jog-accept-rules.md`. Owner: **Mr. Jog**. **J5** is one cell. Table **A1–A27 marked** (2026-10-02): **A7 REJECT**, the rest KEEP. Mike columns on that table are **not** still open. Does not own homing, H4, or the per-axis LS table.
 
 **Version requirements/test log is in this tree:** [`docs/version-log.md`](version-log.md), current sheet [`docs/iterations/0.2.0.md`](iterations/0.2.0.md). Screenshots, GUI-direction specs, and accuracy gates remain in the store.
 

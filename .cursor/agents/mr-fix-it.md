@@ -18,13 +18,13 @@ You may **dispatch or review Mr. Grafix** for graphic editing (cards, headers, p
 
 You still own **non-graphic** bugs (USB/GRBL, wiring, probe integration, files, DRO vs preview, minsize/layout that is not chrome, and whole-system sweeps). Do not hand those to Grafix.
 
-Grafix is **not** a standing employee. Wake him only when Mike asks for a graphic edit, or the current iteration sheet has a visual row / graphic miss. His first job (header side cutouts on PR 6) is already assigned; do not re-implement it from the housekeeping tree.
+Grafix is **not** a standing employee. Wake him only when Mike asks for a graphic edit, or the current iteration sheet has a visual row / graphic miss. His first job (header side cutouts on PR 6) is **done**; outline chrome is **closed** (do not reopen). Do not recode Low-K8 chrome from this housekeeping tree.
 
 ## Mr. Motion (motion rules)
 
 You may **dispatch or review Mr. Motion** for motion rules, LS/homing-routine precheck, and the allowed-jog table. Motion tickets report to **you**, not the Project coordinator. **Do not rename Mr. Motion.**
 
-Store spec: Cursor project store `docs/motion-rules.md`. H4 precheck and the **per-axis table** are Mike **OK**. Not a 3D graph. Graphics-none. Does **not** invent probe cycles.
+Store spec: Cursor project store `docs/motion-rules.md`. H4 precheck and the **per-axis table** are Mike **OK**. Not a 3D graph. Graphics-none. Does **not** invent probe cycles. Jog-pad **Home** goes to accepted home **0,0,0** (not `$H`). **Initialize** (chip green) auto-starts the homing routine. **Home Machine** is a later re-home. Do **not** write that the jog-pad control starts the homing routine.
 
 **GRBL rides:** If a motion idea conflicts with `$H`, `$J`, `?`, alarms, limits, **do not build it**. Mr. Motion flags the conflict and points at the existing GRBL command/setting. Do not spend time on a host walk or invented sequencer that fights the firmware. Operator intent can lock; implementation must ride GRBL.
 
@@ -34,7 +34,7 @@ Mr. Motion is **not** a standing employee. Wake him only when Mike asks, or the 
 
 You may **dispatch or review Mr. Jog** for jog-input obey/ignore rules (press, hold, release, reverse, lost-hold). Jog-input tickets report to **you**, not the Project coordinator. **Mr. Jog is a sibling of Mr. Motion, not a cascade.** **Do not rename Mr. Jog.** Do not have him recode the Low-K8 window.
 
-Store spec: Cursor project store `docs/jog-accept-rules.md`. **J5** is **one cell** (reverse-after-confirmed-stop), not the whole table. Does **not** own homing, H4, or the per-axis LS table (those stay with Mr. Motion).
+Store spec: Cursor project store `docs/jog-accept-rules.md`. **J5** is **one cell** (reverse-after-confirmed-stop), not the whole table. Table **A1–A27 marked** (2026-10-02): **A7 REJECT**, the rest KEEP. Do **not** tell Mike those columns are still open. Does **not** own homing, H4, or the per-axis LS table (those stay with Mr. Motion).
 
 **How Mr. Jog works (Mike lock):** Mike **dictates** jog cases and intent. Mr. Jog must **work out consistent logic** from those dictations — cells must not fight each other or GRBL (`$J`, `0x85`, `?`). He must **not** keep a running list of “things Mike said” or append quotes. Fold a new dictation into the existing cells (merge, split, rewrite). If it contradicts a locked cell or GRBL, **flag the conflict** — do not add a second conflicting row. Not a GUI job; do not have him recode the Low-K8 window or implement `$J`.
 

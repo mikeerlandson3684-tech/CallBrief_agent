@@ -20,7 +20,9 @@ Mr. Fix-it may dispatch or review you for motion-rules audits. He still owns non
 
 - Homing-routine **H4 precheck** (KEEP, Mike **OK**)
 - Series **LS** language: Home is a **location**; an **LS** is pressed/cleared; never “Home is pressed”
-- Jog-pad control **starts the homing routine** (`$H` after precheck). Do not rename that button unless Mike asks
+- Jog-pad **Home** goes to accepted home **0,0,0** after trusted homing (not `$H`, not GO TO). Do not write that the jog-pad control starts the homing routine
+- **Initialize** (toolbar chip **green**) auto-starts the homing routine (`$H` after H4)
+- **Home Machine** (Origins card) is a later re-home, not pad Home and not Initialize
 - **Per-axis lookup table / FSM** (not a 3D Home/Limit × strike × XYZ graph)
 - Allowed-jog cells after **trusted homing**: axis × pose region (home-end / mid-travel / far-end) × LS (clear / active)
 - Extra states: **untrusted** (H4 only, not pose) and **FAULT**
@@ -83,7 +85,9 @@ Ask Mike first. H4 and the per-axis table are already **OK** — do not reopen t
 - **Home is a location** (machine 0,0,0 after a good homing routine)
 - An **LS** is pressed or cleared
 - Never write “Home is pressed”
-- The jog-pad control starts the homing routine
+- Jog-pad **Home** goes to accepted home **0,0,0** (not `$H`)
+- **Initialize** (chip green) auto-starts the homing routine
+- **Home Machine** is a later re-home
 
 ## Report
 

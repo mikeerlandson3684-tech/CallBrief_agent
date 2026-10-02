@@ -11,10 +11,12 @@ This git checkout is **greenfield**. There is no firmware tree or GUI applicatio
 - MakerBase MKS DLC32 v2.1, GRBL
 - TMC2209 V2.0 MKS drivers, NEMA 17, 20 tooth GT2 pulleys
 - 3-pin NC digital touch probe
-- Two NC micro switches in series on each end of all 3 axes (5V; which end was hit is inferred from motion direction at the strike)
+- Two NC micro switches in series on each end of all 3 axes (5V; after **trusted homing**, **pose+LS** names which end)
 - USB laptop ↔ board (DLC32 WiFi unused)
 
 Desktop program on the laptop: **Python**, with **Tkinter as the starting UI default** (not a forever lock; Qt/WPF/etc. are not chosen). Full stack: Cursor project store `docs/project-context.md`.
+
+**Home is a location.** An **LS** is pressed or cleared — never “Home is pressed.” Jog-pad **Home** goes to accepted home **0,0,0** (not `$H`, not GO TO). **Initialize** (toolbar chip green) auto-starts the homing routine. **Home Machine** is a later re-home. Do **not** write that the jog-pad control starts the homing routine.
 
 ## Agents
 

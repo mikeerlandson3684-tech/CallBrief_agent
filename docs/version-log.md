@@ -34,4 +34,6 @@ Do not skip the sheet because the bump is “only paperwork.” The sheet is how
 | **0.1.0** | start | Housekeeping only (organizer, verifier, Mr. Fix-it, `VERSION` file). No product GUI. | *(pre-log; no child sheet)* | — | [PR 4](https://github.com/mikeerlandson3684-tech/CallBrief_agent/pull/4) |
 | **0.2.0** | **minor** | First paralyzed main window (PNG card-border layout around the envelope preview) | [`iterations/0.2.0.md`](iterations/0.2.0.md) | [PR 6](https://github.com/mikeerlandson3684-tech/CallBrief_agent/pull/6) `cursor/dxf-preview-c5e4` | [PR 4](https://github.com/mikeerlandson3684-tech/CallBrief_agent/pull/4) `VERSION` 0.2.0 |
 
-Current sheet: **[`docs/iterations/0.2.0.md`](iterations/0.2.0.md)**.
+Current sheet: **[`docs/iterations/0.2.0.md`](iterations/0.2.0.md)** (Origins / Home Machine; outline chrome closed; title **Low-K8**; test against PR 6 HEAD `082604f`, not Datum / `8b27446`).
+
+Accuracy/precision (fail-closed, **not** a work-order): Cursor project store `docs/accuracy-gates.md`. Numeric capture/display **±0.002 in**. Visual close needs Mike. A sheet row is fail until evidence; partial is not shippable. **0.2.0 outline chrome is closed** — do not reopen.

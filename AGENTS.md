@@ -25,7 +25,9 @@ Mr. Fix-it owns [`docs/fix-it-log.md`](docs/fix-it-log.md) (and the store copy).
 
 ## Wake Mr. Grafix (graphics only)
 
-Reports to **Mr. Fix-it**, not the coordinator, for graphic tickets. Wake **only** when Mike asks for a graphic edit, or the current iteration sheet has a visual row / graphic miss. Not a standing employee. Color only when Mike locks it. First job (already assigned on PR 6, do not implement on this PR): header side cutouts.
+Reports to **Mr. Fix-it**, not the coordinator, for graphic tickets. Wake **only** when Mike asks for a graphic edit, or the current iteration sheet has a visual row / graphic miss. Not a standing employee. Color only when Mike locks it.
+
+**Outline chrome is closed** (Mike: complete outline borders look perfect). Do **not** reopen. Do **not** recode Low-K8 chrome from this PR. First job (header side cutouts on PR 6) is **done**.
 
 Do **not** send Grafix GRBL/USB/wiring, probe cycles, version classification, whole-system sweeps, merging PRs, or deleting files.
 
@@ -35,7 +37,7 @@ Reports to **Mr. Fix-it**, not the coordinator. Graphics-none. Owns motion rules
 
 Wake **only** when Mike asks, or the current iteration sheet has a motion/LS row. Not a standing employee. Does **not** invent probe cycles, implement GRBL, recode the GUI, or merge PRs. Jog-input obey/ignore (press/hold/release/reverse) is **Mr. Jog**, not Mr. Motion.
 
-H4 precheck and the per-axis table are Mike **OK**. Home is a location. An LS is pressed/cleared. Never write “Home is pressed.”
+H4 precheck and the per-axis table are Mike **OK**. Home is a location. An LS is pressed/cleared. Never write “Home is pressed.” Jog-pad **Home** goes to accepted home **0,0,0** (not `$H`). **Initialize** (chip green) auto-starts the homing routine. **Home Machine** is a later re-home. Do **not** write that the jog-pad control starts the homing routine.
 
 **GRBL rides:** If an idea conflicts with `$H`, `$J`, `?`, alarms, limits, **do not build it**. Flag the conflict; use the existing GRBL command/setting. Operator intent can lock; implementation must ride GRBL. No host walk / custom protocol / invented sequencer that fights the firmware.
 
@@ -45,7 +47,7 @@ Reports to **Mr. Fix-it**, not the coordinator. Sibling of **Mr. Motion**, not a
 
 **How Mr. Jog works (Mike lock):** Mike **dictates** jog cases and intent. Mr. Jog must **work out consistent logic** — cells must not fight each other or GRBL (`$J`, `0x85`, `?`). Do **not** keep a running list of “things Mike said.” Do not append quotes. Fold a new dictation into the existing cells (merge, split, rewrite). If it contradicts a locked cell or GRBL, **flag the conflict** — do not add a second conflicting row.
 
-Wake **only** when Mike asks, or the current iteration sheet has a jog-input row. Not a standing employee. Does **not** invent a host motion engine, probe cycles, implement USB/`$J`, recode the GUI, or merge PRs. **J5** is one cell (reverse-after-confirmed-stop), not the whole table.
+Wake **only** when Mike asks, or the current iteration sheet has a jog-input row. Not a standing employee. Does **not** invent a host motion engine, probe cycles, implement USB/`$J`, recode the GUI, or merge PRs. **J5** is one cell (reverse-after-confirmed-stop), not the whole table. Table **A1–A27 marked** (2026-10-02): **A7 REJECT**, the rest KEEP. Do **not** say Mike columns on that table are still open.
 
 **GRBL rides:** jog request is `$J`; cancel is `0x85`; truth is `?`. If a cell fights GRBL, **flag it**. Do not invent a host motion engine.
 
@@ -78,7 +80,7 @@ Not a work-order system. Full rules: Cursor project store `docs/accuracy-gates.m
 
 - A sheet row is **fail until evidence**. **Partial is not shippable.**
 - Do not tell Mike a lock is met without evidence in hand (screenshot path, pytest, measurement). “Looks good” / “Tk approximation” is fail.
-- Visual: screenshot vs mockup/sheet. **Mike’s Try Live / eye rejects even if Fix-it passed.** 0.2.0 visual (rounded fill, no gutters) stays open until Mike accepts.
+- Visual: screenshot vs mockup/sheet. **Mike’s Try Live / eye rejects even if Fix-it passed.** **0.2.0 outline chrome is closed** (K17; rows 2 and 20). Do **not** reopen. Do **not** recode chrome.
 - Numeric: captured or displayed length/position **±0.002 in** unless Mike sets another. Tests must assert that tolerance. No eyeball numbers.
 - Motion authority: if a proposed implementation fights GRBL `$H` `$J` `?` alarms/limits, **do not build it** (store `docs/accuracy-gates.md` rule 8; `docs/motion-rules.md`).
 - Changed locks: update the iteration sheet **first**, then code. Chat memory is not the spec.
@@ -89,7 +91,7 @@ Not a work-order system. Full rules: Cursor project store `docs/accuracy-gates.m
 
 - Product name is **Low-K8** (that spelling). Do not rename the `digitizer` package. Do not invent other product names.
 - This checkout is greenfield for the digitizer. Do not pretend firmware or UI code exists until it is in the tree.
-- Hardware is decided: MakerBase MKS DLC32 v2.1, TMC2209 V2.0 MKS, NEMA 17, 20 tooth GT2, 3-pin NC digital touch probe, two NC micro switches in series on each end of all 3 axes, GRBL. v1 control is USB laptop ↔ board (WiFi unused). Do not invent a different board, probe, or limit scheme. Detail: Cursor project store `docs/project-context.md`. Motion/LS rules: store `docs/motion-rules.md`. Jog-input obey/ignore: store `docs/jog-accept-rules.md`. **Home is a location.** An LS is pressed/cleared. Never “Home is pressed.”
+- Hardware is decided: MakerBase MKS DLC32 v2.1, TMC2209 V2.0 MKS, NEMA 17, 20 tooth GT2, 3-pin NC digital touch probe, two NC micro switches in series on each end of all 3 axes, GRBL. v1 control is USB laptop ↔ board (WiFi unused). Do not invent a different board, probe, or limit scheme. Detail: Cursor project store `docs/project-context.md`. Motion/LS rules: store `docs/motion-rules.md`. Jog-input obey/ignore: store `docs/jog-accept-rules.md`. **Home is a location.** An LS is pressed/cleared. Never “Home is pressed.” Jog-pad **Home** goes to accepted home **0,0,0**. **Initialize** auto-homes. **Home Machine** is a later re-home. Table **A1–A27 marked**; **A7 REJECT**.
 - Language is **Python**; **Tkinter is the starting UI default** (not a forever lock; do not treat Qt, WPF, or other toolkits as chosen). Do not invent a different stack, GRBL/G-code, probe cycles, or approach paths.
 - ID circle (inside of a hole) and OD circle (outside of a boss/cylinder) are separate routines. **ID increases the displayed value of the motion; OD shrinks it.** Offset is per strike and per direction.
 - Authoritative measurement intent lives in the Cursor project store (`docs/probing-routines.md` there) until it is copied into this repo. Match it; do not generate probe sequences. Probe hardware there is a 3-pin NC digital touch probe; do not change offset math.
