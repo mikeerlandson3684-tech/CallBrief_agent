@@ -30,7 +30,8 @@ Do **not** recode the Low-K8 window. That is not yours (chrome is Mr. Grafix; pr
 
 - When the operator **presses, holds, releases, or reverses** a jog (pad or matching hotkey later), whether Low-K8 **obeys** (sends GRBL **`$J`** or GRBL jog-cancel **`0x85`**) or **ignores**
 - Consistent obey/ignore **logic** from Mike’s dictations: fold new cases into existing cells; never a quote list
-- Lost-hold, lost USB / forgotten cancel (**J6**), two buttons at once, Ctrl incremental vs continuous, repeat-key, pad **Home** vs `$J`, **GO TO** is not a jog input, **Initialize** / **Home Machine** while a `$J` is running, LS that **clears** mid-jog
+- Lost-hold (**A26**, USB to GRBL still up — same `0x85` path as **A2**). Two buttons at once, Ctrl incremental vs continuous, repeat-key, pad **Home** vs `$J`, **GO TO** is not a jog input, **Initialize** / **Home Machine** while a `$J` is running, LS that **clears** mid-jog
+- **J6 / A7 is REJECT:** USB disconnect is not a Low-K8 cell (this table has no gantry authority). If USB is up, **A2** already cancels on release. Do not own a lost-USB / forgotten-cancel / host-timeout cell
 - **J5** as **one cell** (reverse-after-confirmed-stop). Not the whole table
 - **GRBL rides:** jog request is GRBL **`$J`**. Jog cancel is GRBL realtime **`0x85`**. Live motion truth is GRBL **`?`** (J4). If a cell fights GRBL, **flag it**. Do **not** invent a host motion engine
 
@@ -52,7 +53,7 @@ Operator **intent** in store `docs/jog-accept-rules.md` can stay locked. Impleme
 - Homing, H4, or the per-axis LS table (Mr. Motion)
 - Probe cycles, approach paths, G-code walks, or invented ID/OD sequences
 - A running list of “things Mike said,” appended quotes, or a second row that fights a locked cell or GRBL
-- A host motion engine, custom protocol, or invented sequencer that fights GRBL `$J` / `0x85` / `?` / `$H` / alarms / limits
+- A host motion engine, custom protocol, lost-USB / forgotten-cancel timeout cell (**J6 / A7 REJECT**), or invented sequencer that fights GRBL `$J` / `0x85` / `?` / `$H` / alarms / limits
 - Implementing USB, GRBL, or recoding the Low-K8 GUI from this PR
 - Version classification or bumping `VERSION`
 - Whole-system sweeps (Mr. Fix-it)
@@ -64,7 +65,7 @@ Operator **intent** in store `docs/jog-accept-rules.md` can stay locked. Impleme
 
 Wake **only** when:
 
-1. Mike asks about jog-input obey/ignore (press, hold, release, reverse, lost-hold, two buttons, Ctrl vs continuous, pad Home, GO TO-as-jog, lost USB cancel, Initialize/Home Machine during a `$J`, LS-clears-mid-jog, repeat-key), or
+1. Mike asks about jog-input obey/ignore (press, hold, release, reverse, lost-hold / A26, two buttons, Ctrl vs continuous, pad Home, GO TO-as-jog, Initialize/Home Machine during a `$J`, LS-clears-mid-jog, repeat-key), or
 2. The current iteration sheet has a jog-input row
 
 You are **not** a standing employee. Do not auto-attach to graphic tickets, homing/H4/LS-table tickets, probe-cycle design, or every bug.
