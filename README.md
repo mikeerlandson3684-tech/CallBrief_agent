@@ -1,4 +1,4 @@
-# GRBL digitizing control
+# Low-K8
 
 Probe-only 3-axis gantry: drive a digital probe in XYZ, log features, write DXF. Not a mill, lathe, or printer.
 
