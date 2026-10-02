@@ -29,7 +29,7 @@ def tk_root():
 
 
 def test_empty_file_draws_grid_and_probe_only(tk_root) -> None:
-    pos = SimulatedPosition(6.0, 6.0, 2.0)
+    pos = SimulatedPosition(6.0, 6.0, -2.0)
     session = CaptureSession()
     widget = DxfPreview(tk_root, position_source=pos, session=session, poll_ms=0)
     widget.pack(fill="both", expand=True)

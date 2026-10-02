@@ -63,9 +63,9 @@ def sample_session() -> CaptureSession:
     """Demo captures inside the placeholder envelope. Not a probe cycle."""
     return CaptureSession(
         circles=[
-            CapturedCircle("id", center_x=3.0, center_y=8.0, diameter=1.0, top_height=1.25),
-            CapturedCircle("od", center_x=8.5, center_y=4.0, diameter=2.0, top_height=0.50),
+            CapturedCircle("id", center_x=3.0, center_y=8.0, diameter=1.0, top_height=-1.25),
+            CapturedCircle("od", center_x=8.5, center_y=4.0, diameter=2.0, top_height=-0.50),
         ],
-        z_heights=[CapturedZHeight(x=5.5, y=6.5, z=2.0)],
+        z_heights=[CapturedZHeight(x=5.5, y=6.5, z=-2.0)],
         dxf_origin=DxfOrigin(x=1.0, y=1.0, z=0.0),
     )

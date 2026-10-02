@@ -1,5 +1,6 @@
 """Session records: ID/OD circles, Z, origin. No rectangles."""
 
+from digitizer.machine_config import default_envelope
 from digitizer.session import CaptureSession, CapturedCircle, sample_session
 
 
@@ -27,6 +28,17 @@ def test_clear_empties_file() -> None:
     session = sample_session()
     session.clear()
     assert session.is_empty()
+
+
+def test_sample_z_is_inside_placeholder_envelope() -> None:
+    env = default_envelope()
+    session = sample_session()
+    for circle in session.circles:
+        assert env.z_min <= circle.top_height <= env.z_max
+    for rec in session.z_heights:
+        assert env.z_min <= rec.z <= env.z_max
+    assert session.dxf_origin is not None
+    assert env.z_min <= session.dxf_origin.z <= env.z_max
 
 
 def test_id_od_are_separate_records() -> None:

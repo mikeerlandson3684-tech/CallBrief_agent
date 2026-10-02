@@ -1,6 +1,6 @@
 """Envelope scale, grid, and Z→radius mapping."""
 
-from digitizer.machine_config import WorkingEnvelope
+from digitizer.machine_config import WorkingEnvelope, default_envelope
 from digitizer.preview_geom import (
     PROBE_RADIUS_FRAC_ZMAX,
     PROBE_RADIUS_FRAC_ZMIN,
@@ -17,8 +17,8 @@ def _env(**overrides: float | str) -> WorkingEnvelope:
         x_max=12.0,
         y_min=0.0,
         y_max=12.0,
-        z_min=0.0,
-        z_max=4.0,
+        z_min=-4.0,
+        z_max=0.0,
         units="in",
     )
     data.update(overrides)
@@ -47,8 +47,9 @@ def test_z_max_is_largest_circle() -> None:
 
 def test_z_plus_grows_z_minus_shrinks() -> None:
     env = _env()
-    r_low = probe_radius_machine(0.5, env)
-    r_high = probe_radius_machine(3.5, env)
+    # Machine Z+ is toward home (up, toward 0); Z− is down toward −4.
+    r_low = probe_radius_machine(-3.5, env)
+    r_high = probe_radius_machine(-0.5, env)
     assert r_high > r_low
 
 
@@ -64,8 +65,19 @@ def test_mid_z_is_linear() -> None:
     env = _env()
     r_min = probe_radius_machine(env.z_min, env)
     r_max = probe_radius_machine(env.z_max, env)
-    r_mid = probe_radius_machine(2.0, env)
+    r_mid = probe_radius_machine(-2.0, env)
     assert abs(r_mid - (r_min + r_max) / 2.0) < 1e-9
+
+
+def test_default_envelope_z_plus_grows() -> None:
+    """K15: circle grows as machine Z increases, on the H10 placeholder."""
+    env = default_envelope()
+    assert env.z_min == -4.0
+    assert env.z_max == 0.0
+    r_down = probe_radius_machine(env.z_min, env)
+    r_up = probe_radius_machine(env.z_max, env)
+    r_mid = probe_radius_machine(-2.0, env)
+    assert r_up > r_mid > r_down
 
 
 def test_zero_z_span_stays_at_rmin() -> None:

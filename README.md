@@ -32,7 +32,7 @@ Simulated XYZ sliders in the preview card are a stub until a DRO / GRBL `?` stat
 
 The canvas always shows the **entire working envelope** (letterboxed, aspect preserved). It does **not** zoom to the part.
 
-Placeholder envelope (not measured machine travel): **X 0–12 in, Y 0–12 in, Z 0–4 in**. Values live in `digitizer/machine_config.py` so a later Settings tab can write them.
+Placeholder envelope (not measured machine travel): **X 0–12 in, Y 0–12 in, Z 0 (up/home) to −4 in (down/far)**. Dummy size stays **12×12×4 in**. Values live in `digitizer/machine_config.py` so a later Settings tab can write them.
 
 ### Probe circle vs Z
 

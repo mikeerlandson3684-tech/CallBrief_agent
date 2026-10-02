@@ -19,12 +19,14 @@ UNITS_INCH = "in"
 UNITS_MM = "mm"
 
 # Obvious placeholders — not the real gantry, not claimed as travel limits.
+# Dummy size stays 12×12×4 in until measured. H10: home is 0,0,0; work is
+# X+, Y+, Z−. Z max is 0 (up/home); Z min is −4 in (down/far). Not 0…+4.
 PLACEHOLDER_X_MIN = 0.0
 PLACEHOLDER_X_MAX = 12.0
 PLACEHOLDER_Y_MIN = 0.0
 PLACEHOLDER_Y_MAX = 12.0
-PLACEHOLDER_Z_MIN = 0.0
-PLACEHOLDER_Z_MAX = 4.0
+PLACEHOLDER_Z_MIN = -4.0
+PLACEHOLDER_Z_MAX = 0.0
 PLACEHOLDER_UNITS = UNITS_INCH
 
 

@@ -21,7 +21,10 @@ If ``z_max == z_min``, ``r = r_min``. Values below ``z_min`` stay at
 ``r_min``; values above ``z_max`` stay at ``r_max``.
 
 This radius is a **Z cue**. It is not stylus diameter and not a captured
-ID/OD. Circle **grows with Z+** and **shrinks with Z−**.
+ID/OD. Circle **grows with Z+** (machine Z increases, toward home/up) and
+**shrinks with Z−** (machine Z decreases, away/down). Placeholder H10:
+``z_max = 0`` (up/home), ``z_min = −4`` in (down/far). Mapping is by
+numeric Z, so that polarity still holds.
 
 Grid
 ----

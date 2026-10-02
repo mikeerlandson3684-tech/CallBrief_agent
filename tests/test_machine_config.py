@@ -15,6 +15,13 @@ from digitizer.machine_config import (
 
 def test_placeholder_envelope_is_obvious_and_labeled() -> None:
     env = default_envelope()
+    # H10: home is 0,0,0; travel from home is X+, Y+, Z−. Dummy 12×12×4 in.
+    assert PLACEHOLDER_X_MIN == 0.0
+    assert PLACEHOLDER_X_MAX == 12.0
+    assert PLACEHOLDER_Y_MIN == 0.0
+    assert PLACEHOLDER_Y_MAX == 12.0
+    assert PLACEHOLDER_Z_MAX == 0.0  # up / home
+    assert PLACEHOLDER_Z_MIN == -4.0  # down / far
     assert env.x_min == PLACEHOLDER_X_MIN
     assert env.x_max == PLACEHOLDER_X_MAX
     assert env.y_min == PLACEHOLDER_Y_MIN
@@ -29,3 +36,5 @@ def test_placeholder_envelope_is_obvious_and_labeled() -> None:
     assert "Placeholder envelope" in text
     assert "not measured" in text
     assert "Settings later" in text
+    assert "-4" in text
+    assert "Z -4" in text or "Z −4" in text
