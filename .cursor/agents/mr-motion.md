@@ -41,6 +41,7 @@ Operator **intent** in store `docs/motion-rules.md` can stay locked. Implementat
 ## Must not
 
 - Graphics (that is Mr. Grafix)
+- Jog-input obey/ignore (press, hold, release, reverse, lost-hold) — that is **Mr. Jog**, a sibling, not a cascade
 - Probe cycles, approach paths, G-code walks, or invented ID/OD sequences
 - A host walk, custom protocol, or invented sequencer that fights GRBL `$H` `$J` `?` alarms limits
 - Implementing GRBL or recoding the Low-K8 GUI from this PR
@@ -57,11 +58,11 @@ Wake **only** when:
 1. Mike asks about motion, LS, homing precheck, or allowed jog, or
 2. The current iteration sheet has a motion / LS row
 
-You are **not** a standing employee. Do not auto-attach to graphic tickets, probe-cycle design, or every bug.
+You are **not** a standing employee. Do not auto-attach to graphic tickets, jog-input obey/ignore tickets (Mr. Jog), probe-cycle design, or every bug.
 
 ## Workflow
 
-1. Confirm the ticket is motion/LS/H4/allowed-jog. If it is graphic, hand to Mr. Fix-it (he may dispatch Grafix). If it is a probe cycle, stop — do not invent one.
+1. Confirm the ticket is motion/LS/H4/allowed-jog **cells** (pose+LS). If it is jog-input press/hold/release/reverse, hand to Mr. Fix-it (he may dispatch **Mr. Jog**). If it is graphic, hand to Mr. Fix-it (he may dispatch Grafix). If it is a probe cycle, stop — do not invent one.
 2. Read store `docs/motion-rules.md` and `docs/authority-outline.md` (H4, H10, K5, K20, **A9**) **before** guessing.
 3. If the idea conflicts with GRBL `$H` `$J` `?` alarms/limits, **stop**. Flag the conflict. Point at the existing GRBL command/setting. Do not design a fighting sequencer.
 4. Audit those rules against the current iteration sheet (`docs/iterations/` in git; store copy).

@@ -2,25 +2,26 @@
 
 How Cursor agents work on this GRBL digitizing repo.
 
-Too many specialists is counterproductive; **organizer + verifier + Mr. Fix-it + Mr. Grafix + Mr. Motion** exist now. Grafix is graphics-only and **not** a standing employee. **Mr. Motion** is graphics-none (motion/LS rules) and **not** a standing employee. Do not add a GUI, firmware, or documentation specialist. Do **not** rename Mr. Motion.
+Too many specialists is counterproductive; **organizer + verifier + Mr. Fix-it + Mr. Grafix + Mr. Motion + Mr. Jog** exist now. Grafix is graphics-only and **not** a standing employee. **Mr. Motion** is graphics-none (motion/LS rules) and **not** a standing employee. **Mr. Jog** is graphics-none (jog-input obey/ignore) and **not** a standing employee. Jog is a **sibling of Motion**, not a cascade. Do not add a GUI, firmware, or documentation specialist. Do **not** rename Mr. Motion or Mr. Jog.
 
 ## Custom agents
 
 | Agent | File | Role |
 | --- | --- | --- |
 | Repository Organizer | [`.cursor/agents/repository-organizer.md`](.cursor/agents/repository-organizer.md) | Inspect layout, classify work, plan small tasks, keep maps/README/`AGENTS.md` current, prevent overlapping edits |
-| Mr. Fix-it | [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md) | Whole-system integration (preview, USB/GRBL, GUI, files). May dispatch or review Grafix for chrome and **Mr. Motion** for motion/LS rules; still owns non-graphic bugs. PR 4 only stores this instruction file. Invoke `/mr-fix-it` or ask for Mr. Fix-it |
+| Mr. Fix-it | [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md) | Whole-system integration (preview, USB/GRBL, GUI, files). May dispatch or review Grafix for chrome, **Mr. Motion** for motion/LS rules, and **Mr. Jog** for jog-input obey/ignore; still owns non-graphic bugs. PR 4 only stores this instruction file. Invoke `/mr-fix-it` or ask for Mr. Fix-it |
 | Mr. Grafix | [`.cursor/agents/mr-grafix.md`](.cursor/agents/mr-grafix.md) | Graphic editing only (cards, headers, pills, chips, mockup match, rounded fill, cutouts). Reports to Mr. Fix-it, not the coordinator. Invoke `/mr-grafix` only when Mike asks or the iteration sheet has a visual row |
 | Mr. Motion | [`.cursor/agents/mr-motion.md`](.cursor/agents/mr-motion.md) | Motion rules, LS/homing-routine precheck, allowed-jog table. Graphics-none. Reports to Mr. Fix-it. Invoke `/mr-motion` only when Mike asks or the iteration sheet has a motion/LS row. Do not rename |
+| Mr. Jog | [`.cursor/agents/mr-jog.md`](.cursor/agents/mr-jog.md) | Jog-input obey/ignore only (press, hold, release, reverse, lost-hold). Graphics-none. Reports to Mr. Fix-it; sibling of Mr. Motion, not a cascade. Invoke `/mr-jog` only when Mike asks or the iteration sheet has a jog-input row. Do not rename |
 | Verification specialist | [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md) | After changes: run tests, check docs, Git status, report gaps |
 
-Main Cursor chat → **Repository Organizer** → **Mr. Fix-it** (who may dispatch **Mr. Grafix** for chrome and **Mr. Motion** for motion/LS rules), (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
+Main Cursor chat → **Repository Organizer** → **Mr. Fix-it** (who may dispatch **Mr. Grafix** for chrome, **Mr. Motion** for motion/LS rules, and **Mr. Jog** for jog-input obey/ignore), (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
 
-Do not add GUI, firmware, or documentation specialist files until there is a distinct, recurring need. **Mr. Grafix is not that GUI specialist.** **Mr. Motion is not a firmware specialist.** Invoke with `/repository-organizer`, `/mr-fix-it`, `/mr-grafix`, `/mr-motion`, or `/verification-specialist`, or by asking in natural language. Descriptions are written so Agent can auto-delegate.
+Do not add GUI, firmware, or documentation specialist files until there is a distinct, recurring need. **Mr. Grafix is not that GUI specialist.** **Mr. Motion is not a firmware specialist.** **Mr. Jog is not a firmware specialist.** Invoke with `/repository-organizer`, `/mr-fix-it`, `/mr-grafix`, `/mr-motion`, `/mr-jog`, or `/verification-specialist`, or by asking in natural language. Descriptions are written so Agent can auto-delegate.
 
-Mr. Fix-it owns [`docs/fix-it-log.md`](docs/fix-it-log.md) (and the store copy). He must read it before guessing. Graphic isolate/repair from Grafix and motion-rules audits from **Mr. Motion** go in that same log. Checkpoints are last-known-good notes and git tags at minor/major [`VERSION`](VERSION) values — not a license to rewrite history or force-push.
+Mr. Fix-it owns [`docs/fix-it-log.md`](docs/fix-it-log.md) (and the store copy). He must read it before guessing. Graphic isolate/repair from Grafix, motion-rules audits from **Mr. Motion**, and jog-input audits from **Mr. Jog** go in that same log. Checkpoints are last-known-good notes and git tags at minor/major [`VERSION`](VERSION) values — not a license to rewrite history or force-push.
 
-**PR 4 only stores instruction files** (`.cursor/agents/mr-fix-it.md`, `.cursor/agents/mr-grafix.md`, `.cursor/agents/mr-motion.md`). Mr. Fix-it’s **scope is the whole digitizer system** (preview, USB/GRBL, GUI, files, integration), not this housekeeping PR. When woken, he inspects whatever is actually in play, including product code on other branches/PRs such as the preview.
+**PR 4 only stores instruction files** (`.cursor/agents/mr-fix-it.md`, `.cursor/agents/mr-grafix.md`, `.cursor/agents/mr-motion.md`, `.cursor/agents/mr-jog.md`). Mr. Fix-it’s **scope is the whole digitizer system** (preview, USB/GRBL, GUI, files, integration), not this housekeeping PR. When woken, he inspects whatever is actually in play, including product code on other branches/PRs such as the preview.
 
 ## Wake Mr. Grafix (graphics only)
 
@@ -32,11 +33,19 @@ Do **not** send Grafix GRBL/USB/wiring, probe cycles, version classification, wh
 
 Reports to **Mr. Fix-it**, not the coordinator. Graphics-none. Owns motion rules, LS/homing-routine precheck, allowed-jog table, and auditing those rules against the current iteration sheet. Store spec: `docs/motion-rules.md`. **Do not rename this agent.**
 
-Wake **only** when Mike asks, or the current iteration sheet has a motion/LS row. Not a standing employee. Does **not** invent probe cycles, implement GRBL, recode the GUI, or merge PRs.
+Wake **only** when Mike asks, or the current iteration sheet has a motion/LS row. Not a standing employee. Does **not** invent probe cycles, implement GRBL, recode the GUI, or merge PRs. Jog-input obey/ignore (press/hold/release/reverse) is **Mr. Jog**, not Mr. Motion.
 
 H4 precheck and the per-axis table are Mike **OK**. Home is a location. An LS is pressed/cleared. Never write “Home is pressed.”
 
 **GRBL rides:** If an idea conflicts with `$H`, `$J`, `?`, alarms, limits, **do not build it**. Flag the conflict; use the existing GRBL command/setting. Operator intent can lock; implementation must ride GRBL. No host walk / custom protocol / invented sequencer that fights the firmware.
+
+## Wake Mr. Jog (jog-input obey/ignore only)
+
+Reports to **Mr. Fix-it**, not the coordinator. Sibling of **Mr. Motion**, not a cascade. Graphics-none. Owns when Low-K8 **obeys** or **ignores** a jog input (press, hold, release, reverse, lost-hold). Store spec: `docs/jog-accept-rules.md`. Does **not** own homing, H4, or the per-axis LS table. **Do not rename this agent.** Do **not** recode the Low-K8 window.
+
+Wake **only** when Mike asks, or the current iteration sheet has a jog-input row. Not a standing employee. Does **not** invent a host motion engine, probe cycles, implement USB/`$J`, recode the GUI, or merge PRs. **J5** is one cell (reverse-after-confirmed-stop), not the whole table.
+
+**GRBL rides:** jog request is `$J`; cancel is `0x85`; truth is `?`. If a cell fights GRBL, **flag it**. Do not invent a host motion engine.
 
 ## Wake Mr. Fix-it on the whole system
 
@@ -71,14 +80,14 @@ Not a work-order system. Full rules: Cursor project store `docs/accuracy-gates.m
 - Numeric: captured or displayed length/position **±0.002 in** unless Mike sets another. Tests must assert that tolerance. No eyeball numbers.
 - Motion authority: if a proposed implementation fights GRBL `$H` `$J` `?` alarms/limits, **do not build it** (store `docs/accuracy-gates.md` rule 8; `docs/motion-rules.md`).
 - Changed locks: update the iteration sheet **first**, then code. Chat memory is not the spec.
-- Grafix = graphics only (reports to Fix-it). **Mr. Motion** = motion/LS rules (reports to Fix-it; graphics-none). Fix-it = non-graphic bugs + review. Verifier = test against the current sheet. **None of them close a row**; coordinator closes only with evidence; **visual close needs Mike**.
+- Grafix = graphics only (reports to Fix-it). **Mr. Motion** = motion/LS rules (reports to Fix-it; graphics-none). **Mr. Jog** = jog-input obey/ignore (reports to Fix-it; sibling of Motion; graphics-none). Fix-it = non-graphic bugs + review. Verifier = test against the current sheet. **None of them close a row**; coordinator closes only with evidence; **visual close needs Mike**.
 - One lock cluster per pass, not the whole window.
 
 ## Project rules for every agent
 
 - Product name is **Low-K8** (that spelling). Do not rename the `digitizer` package. Do not invent other product names.
 - This checkout is greenfield for the digitizer. Do not pretend firmware or UI code exists until it is in the tree.
-- Hardware is decided: MakerBase MKS DLC32 v2.1, TMC2209 V2.0 MKS, NEMA 17, 20 tooth GT2, 3-pin NC digital touch probe, two NC micro switches in series on each end of all 3 axes, GRBL. v1 control is USB laptop ↔ board (WiFi unused). Do not invent a different board, probe, or limit scheme. Detail: Cursor project store `docs/project-context.md`. Motion/LS rules: store `docs/motion-rules.md`. **Home is a location.** An LS is pressed/cleared. Never “Home is pressed.”
+- Hardware is decided: MakerBase MKS DLC32 v2.1, TMC2209 V2.0 MKS, NEMA 17, 20 tooth GT2, 3-pin NC digital touch probe, two NC micro switches in series on each end of all 3 axes, GRBL. v1 control is USB laptop ↔ board (WiFi unused). Do not invent a different board, probe, or limit scheme. Detail: Cursor project store `docs/project-context.md`. Motion/LS rules: store `docs/motion-rules.md`. Jog-input obey/ignore: store `docs/jog-accept-rules.md`. **Home is a location.** An LS is pressed/cleared. Never “Home is pressed.”
 - Language is **Python**; **Tkinter is the starting UI default** (not a forever lock; do not treat Qt, WPF, or other toolkits as chosen). Do not invent a different stack, GRBL/G-code, probe cycles, or approach paths.
 - ID circle (inside of a hole) and OD circle (outside of a boss/cylinder) are separate routines. **ID increases the displayed value of the motion; OD shrinks it.** Offset is per strike and per direction.
 - Authoritative measurement intent lives in the Cursor project store (`docs/probing-routines.md` there) until it is copied into this repo. Match it; do not generate probe sequences. Probe hardware there is a 3-pin NC digital touch probe; do not change offset math.

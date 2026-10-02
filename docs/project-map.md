@@ -10,6 +10,7 @@ Maintained by the Repository Organizer. Reflects this git checkout only. Do not 
 │   ├── mr-fix-it.md              # Mr. Fix-it: isolate, report cause, then repair
 │   ├── mr-grafix.md              # Mr. Grafix: graphic editing only; reports to Fix-it
 │   ├── mr-motion.md              # Mr. Motion: motion/LS rules; reports to Fix-it; do not rename
+│   ├── mr-jog.md                 # Mr. Jog: jog-input obey/ignore; reports to Fix-it; sibling of Motion
 │   ├── repository-organizer.md   # coordinates layout, planning, non-overlapping edits
 │   └── verification-specialist.md  # tests, docs, Git status, gaps (read-only)
 ├── AGENTS.md                     # how agents work; approval gates; VERSION wake rules
@@ -34,14 +35,15 @@ Main Cursor chat
   └── Repository Organizer
         ├── Mr. Fix-it
         │     ├── Mr. Grafix          # graphics only; not a standing employee
-        │     └── Mr. Motion          # motion/LS rules; not a standing employee; do not rename
+        │     ├── Mr. Motion          # motion/LS rules; not a standing employee; do not rename
+        │     └── Mr. Jog             # jog-input obey/ignore; sibling of Motion; do not rename
         ├── (later) GUI specialist
         ├── (later) Firmware specialist
         ├── (later) Documentation specialist
         └── Verification specialist
 ```
 
-**Organizer**, **verifier**, **Mr. Fix-it**, **Mr. Grafix**, and **Mr. Motion** exist now. Grafix reports to Fix-it for graphic tickets (not the coordinator). Mr. Motion reports to Fix-it for motion/LS rules (graphics-none). Neither is a GUI/firmware specialist; neither is a standing employee. Too many specialists is counterproductive. No GUI, firmware, or documentation specialist files. Do **not** rename Mr. Motion.
+**Organizer**, **verifier**, **Mr. Fix-it**, **Mr. Grafix**, **Mr. Motion**, and **Mr. Jog** exist now. Grafix reports to Fix-it for graphic tickets (not the coordinator). Mr. Motion reports to Fix-it for motion/LS rules (graphics-none). Mr. Jog reports to Fix-it for jog-input obey/ignore (graphics-none; sibling of Motion, not a cascade). None is a GUI/firmware specialist; none is a standing employee. Too many specialists is counterproductive. No GUI, firmware, or documentation specialist files. Do **not** rename Mr. Motion or Mr. Jog.
 
 ## Authoritative specs (not in this git tree yet)
 
@@ -52,6 +54,8 @@ Measurement intent and stylus offset math: Cursor project store `docs/probing-ro
 Accuracy/precision (fail-closed, **not** a work-order): Cursor project store `docs/accuracy-gates.md`. Numeric capture/display **±0.002 in**. Visual close needs Mike. Agents do not close iteration-sheet rows. One lock cluster per pass.
 
 Motion / LS / H4 precheck / allowed-jog table: Cursor project store `docs/motion-rules.md` (H4 Mike **OK**; per-axis table, not a 3D graph; **GRBL rides** — do not build what fights `$H` `$J` `?` alarms limits). **Home is a location.** An **LS** is pressed or cleared. The jog-pad control **starts the homing routine**. Owner: **Mr. Motion**.
+
+Jog-input obey/ignore (press / hold / release / reverse / lost-hold): Cursor project store `docs/jog-accept-rules.md`. Owner: **Mr. Jog**. **J5** is one cell. Does not own homing, H4, or the per-axis LS table.
 
 **Version requirements/test log is in this tree:** [`docs/version-log.md`](version-log.md), current sheet [`docs/iterations/0.2.0.md`](iterations/0.2.0.md). Screenshots, GUI-direction specs, and accuracy gates remain in the store.
 
