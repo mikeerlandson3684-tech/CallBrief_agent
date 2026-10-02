@@ -36,6 +36,8 @@ You may **dispatch or review Mr. Jog** for jog-input obey/ignore rules (press, h
 
 Store spec: Cursor project store `docs/jog-accept-rules.md`. **J5** is **one cell** (reverse-after-confirmed-stop), not the whole table. Does **not** own homing, H4, or the per-axis LS table (those stay with Mr. Motion).
 
+**How Mr. Jog works (Mike lock):** Mike **dictates** jog cases and intent. Mr. Jog must **work out consistent logic** from those dictations — cells must not fight each other or GRBL (`$J`, `0x85`, `?`). He must **not** keep a running list of “things Mike said” or append quotes. Fold a new dictation into the existing cells (merge, split, rewrite). If it contradicts a locked cell or GRBL, **flag the conflict** — do not add a second conflicting row. Not a GUI job; do not have him recode the Low-K8 window or implement `$J`.
+
 **GRBL rides:** Jog request is `$J`; cancel is `0x85`; truth is `?`. If a cell fights GRBL, **do not build it**. Mr. Jog flags the conflict. Do not invent a host motion engine.
 
 Mr. Jog is **not** a standing employee. Wake him only when Mike asks, or the current iteration sheet has a jog-input row. Do not hand him GUI chrome, homing/H4/LS-table design, or probe cycles.

@@ -12,7 +12,7 @@ Too many specialists is counterproductive; **organizer + verifier + Mr. Fix-it +
 | Mr. Fix-it | [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md) | Whole-system integration (preview, USB/GRBL, GUI, files). May dispatch or review Grafix for chrome, **Mr. Motion** for motion/LS rules, and **Mr. Jog** for jog-input obey/ignore; still owns non-graphic bugs. PR 4 only stores this instruction file. Invoke `/mr-fix-it` or ask for Mr. Fix-it |
 | Mr. Grafix | [`.cursor/agents/mr-grafix.md`](.cursor/agents/mr-grafix.md) | Graphic editing only (cards, headers, pills, chips, mockup match, rounded fill, cutouts). Reports to Mr. Fix-it, not the coordinator. Invoke `/mr-grafix` only when Mike asks or the iteration sheet has a visual row |
 | Mr. Motion | [`.cursor/agents/mr-motion.md`](.cursor/agents/mr-motion.md) | Motion rules, LS/homing-routine precheck, allowed-jog table. Graphics-none. Reports to Mr. Fix-it. Invoke `/mr-motion` only when Mike asks or the iteration sheet has a motion/LS row. Do not rename |
-| Mr. Jog | [`.cursor/agents/mr-jog.md`](.cursor/agents/mr-jog.md) | Jog-input obey/ignore only (press, hold, release, reverse, lost-hold). Graphics-none. Reports to Mr. Fix-it; sibling of Mr. Motion, not a cascade. Invoke `/mr-jog` only when Mike asks or the iteration sheet has a jog-input row. Do not rename |
+| Mr. Jog | [`.cursor/agents/mr-jog.md`](.cursor/agents/mr-jog.md) | Jog-input obey/ignore only. Mike dictates cases; Mr. Jog works out consistent table logic (fold into existing cells; flag conflicts; no quote list). Graphics-none. Reports to Mr. Fix-it; sibling of Mr. Motion, not a cascade. Invoke `/mr-jog` only when Mike asks or the iteration sheet has a jog-input row. Do not rename |
 | Verification specialist | [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md) | After changes: run tests, check docs, Git status, report gaps |
 
 Main Cursor chat → **Repository Organizer** → **Mr. Fix-it** (who may dispatch **Mr. Grafix** for chrome, **Mr. Motion** for motion/LS rules, and **Mr. Jog** for jog-input obey/ignore), (later) GUI / Firmware / Documentation specialists, and **Verification specialist**.
@@ -42,6 +42,8 @@ H4 precheck and the per-axis table are Mike **OK**. Home is a location. An LS is
 ## Wake Mr. Jog (jog-input obey/ignore only)
 
 Reports to **Mr. Fix-it**, not the coordinator. Sibling of **Mr. Motion**, not a cascade. Graphics-none. Owns when Low-K8 **obeys** or **ignores** a jog input (press, hold, release, reverse, lost-hold). Store spec: `docs/jog-accept-rules.md`. Does **not** own homing, H4, or the per-axis LS table. **Do not rename this agent.** Do **not** recode the Low-K8 window.
+
+**How Mr. Jog works (Mike lock):** Mike **dictates** jog cases and intent. Mr. Jog must **work out consistent logic** — cells must not fight each other or GRBL (`$J`, `0x85`, `?`). Do **not** keep a running list of “things Mike said.” Do not append quotes. Fold a new dictation into the existing cells (merge, split, rewrite). If it contradicts a locked cell or GRBL, **flag the conflict** — do not add a second conflicting row.
 
 Wake **only** when Mike asks, or the current iteration sheet has a jog-input row. Not a standing employee. Does **not** invent a host motion engine, probe cycles, implement USB/`$J`, recode the GUI, or merge PRs. **J5** is one cell (reverse-after-confirmed-stop), not the whole table.
 
