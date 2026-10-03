@@ -28,7 +28,6 @@ HOTKEY_TARGETS = (
     "Capture Z Height",
     "Lock Z",
     "Set DXF Origin",
-    "FINISH PROBING",
     "New File",
     "Open File",
     "Save",

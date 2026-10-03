@@ -59,7 +59,6 @@ REQUIRED_CONTROLS = (
     "Custom",
     "Custom increment",
     "Measured Diameter",
-    "FINISH PROBING",
     "Discard Since Last Save",
     "Messages",
     "DXF Preview",
@@ -98,6 +97,10 @@ def test_every_control_logs_pressed(app: MainWindow) -> None:
 def test_save_and_close_exist_bridge_does_not(app: MainWindow) -> None:
     assert "Save" in app.controls
     assert "Close" in app.controls
+    assert "Capture Feature" in app.controls
+    assert "Discard Since Last Save" in app.controls
+    assert "FINISH PROBING" not in app.controls
+    assert "Finish Probing" not in app.controls
     assert "Bridge" not in app.controls
     texts = _widget_texts(app)
     joined = " ".join(texts)
@@ -107,6 +110,8 @@ def test_save_and_close_exist_bridge_does_not(app: MainWindow) -> None:
     assert "Inner" not in joined
     assert "Outer" not in joined
     assert "Stylus" not in joined
+    assert "FINISH PROBING" not in joined
+    assert "Finish Probing" not in joined
 
 
 def test_id_and_od_are_separate_controls(app: MainWindow) -> None:
@@ -125,7 +130,8 @@ def test_goto_and_jog_do_not_move(app: MainWindow) -> None:
     app.click_control("Y+")
     app.click_control("Home")
     app.click_control("Home Machine")
-    app.click_control("FINISH PROBING")
+    app.click_control("Save")
+    app.click_control("Discard Since Last Save")
     app.click_control("Capture Feature")
     app.click_control("New File")
     assert app.position.get_xyz() == before
@@ -194,6 +200,8 @@ def test_hotkeys_stub_has_bind_boxes(app: MainWindow) -> None:
     box.event_generate("<ButtonRelease-1>")
     app.update()
     assert any("Capture Feature bind box pressed" in line for line in app.messages.lines)
+    assert "FINISH PROBING" not in app._hotkeys.bind_boxes
+    assert "Save" in app._hotkeys.bind_boxes
     app._close_hotkeys()
 
 
@@ -276,7 +284,7 @@ def test_pill_buttons_fill_canvas_without_side_gutters(app: MainWindow) -> None:
     """Rectangular canvas leftover on left/right of the stadium is the shape bug."""
     from digitizer.chrome import PillButton
 
-    for name in ("New File", "Capture Feature", "FINISH PROBING", "Initialized", "Y+"):
+    for name in ("New File", "Capture Feature", "Discard Since Last Save", "Initialized", "Y+"):
         btn = app.controls[name]
         assert isinstance(btn, PillButton)
         canvas = next(c for c in btn.winfo_children() if isinstance(c, tk.Canvas))
