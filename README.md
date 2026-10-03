@@ -1,2 +1,35 @@
-# CallBrief_agent
-an AI call logger
+# Low-K8
+
+Probe-only 3-axis gantry control for capturing existing part features and writing them to DXF. Not a mill, lathe, or printer.
+
+**Product name: Low-K8** (that spelling). The Python package stays `digitizer` — do not rename it.
+
+This git checkout is **greenfield**. There is no firmware tree or GUI application here yet — only project housekeeping so later work stays organized.
+
+## Hardware (v1, decided)
+
+- MakerBase MKS DLC32 v2.1, GRBL
+- TMC2209 V2.0 MKS drivers, NEMA 17, 20 tooth GT2 pulleys
+- 3-pin NC digital touch probe
+- Two NC micro switches in series on each end of all 3 axes (5V; after **trusted homing**, **pose+LS** names which end)
+- USB laptop ↔ board (DLC32 WiFi unused)
+
+Desktop program on the laptop: **Python**, with **Tkinter as the starting UI default** (not a forever lock; Qt/WPF/etc. are not chosen). Full stack: Cursor project store `docs/project-context.md`.
+
+**Home is a location.** An **LS** is pressed or cleared — never “Home is pressed.” Jog-pad **Home** goes to accepted home **0,0,0** (not `$H`, not GO TO). **Initialize** (toolbar chip green) auto-starts the homing routine. **Home Machine** is a later re-home. Do **not** write that the jog-pad control starts the homing routine.
+
+## Agents
+
+How agents work on this repo: [`AGENTS.md`](AGENTS.md)
+
+Custom agents (organizer + verifier + Mr. Fix-it + Mr. Grafix + Mr. Motion + Mr. Jog + Mr. Probe; Grafix, Motion, Jog, and Probe report to Fix-it; Motion is graphics-none, motion/LS rules; Jog is graphics-none, jog-input obey/ignore; Probe is graphics-none, ID/OD probing routines; Jog, Motion, and Probe are siblings, not a cascade):
+
+- [`.cursor/agents/repository-organizer.md`](.cursor/agents/repository-organizer.md)
+- [`.cursor/agents/mr-fix-it.md`](.cursor/agents/mr-fix-it.md)
+- [`.cursor/agents/mr-grafix.md`](.cursor/agents/mr-grafix.md)
+- [`.cursor/agents/mr-motion.md`](.cursor/agents/mr-motion.md)
+- [`.cursor/agents/mr-jog.md`](.cursor/agents/mr-jog.md)
+- [`.cursor/agents/mr-probe.md`](.cursor/agents/mr-probe.md)
+- [`.cursor/agents/verification-specialist.md`](.cursor/agents/verification-specialist.md)
+
+Current layout: [`docs/project-map.md`](docs/project-map.md). Version: [`VERSION`](VERSION) (**0.2.0**). Requirements/test log: [`docs/version-log.md`](docs/version-log.md) (current sheet [`docs/iterations/0.2.0.md`](docs/iterations/0.2.0.md)). Mr. Fix-it’s log: [`docs/fix-it-log.md`](docs/fix-it-log.md).

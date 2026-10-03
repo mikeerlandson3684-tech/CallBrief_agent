@@ -1,0 +1,4 @@
+0.2.0
+# Coordinator classifies patch vs minor vs major. Mike does not classify.
+# 0.2.0 = minor: first paralyzed main window (PR 6 new screen).
+# Mr. Fix-it does not bump this file. He is woken separately on this bump.
