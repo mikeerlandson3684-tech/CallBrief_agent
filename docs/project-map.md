@@ -11,6 +11,7 @@ Maintained by the Repository Organizer. Reflects this git checkout only. Do not 
 │   ├── mr-grafix.md              # Mr. Grafix: graphic editing only; reports to Fix-it
 │   ├── mr-motion.md              # Mr. Motion: motion/LS rules; reports to Fix-it; do not rename
 │   ├── mr-jog.md                 # Mr. Jog: jog-input obey/ignore; reports to Fix-it; sibling of Motion
+│   ├── mr-probe.md               # Mr. Probe: ID/OD probing routines; reports to Fix-it; sibling of Motion and Jog
 │   ├── repository-organizer.md   # coordinates layout, planning, non-overlapping edits
 │   └── verification-specialist.md  # tests, docs, Git status, gaps (read-only)
 ├── AGENTS.md                     # how agents work; approval gates; VERSION wake rules
@@ -36,26 +37,29 @@ Main Cursor chat
         ├── Mr. Fix-it
         │     ├── Mr. Grafix          # graphics only; not a standing employee
         │     ├── Mr. Motion          # motion/LS rules; not a standing employee; do not rename
-        │     └── Mr. Jog             # jog-input obey/ignore; sibling of Motion; do not rename
+        │     ├── Mr. Jog             # jog-input obey/ignore; sibling of Motion; do not rename
+        │     └── Mr. Probe           # ID/OD probing routines; sibling of Motion and Jog; do not rename
         ├── (later) GUI specialist
         ├── (later) Firmware specialist
         ├── (later) Documentation specialist
         └── Verification specialist
 ```
 
-**Organizer**, **verifier**, **Mr. Fix-it**, **Mr. Grafix**, **Mr. Motion**, and **Mr. Jog** exist now. Grafix reports to Fix-it for graphic tickets (not the coordinator). Mr. Motion reports to Fix-it for motion/LS rules (graphics-none). Mr. Jog reports to Fix-it for jog-input obey/ignore (graphics-none; sibling of Motion, not a cascade). None is a GUI/firmware specialist; none is a standing employee. Too many specialists is counterproductive. No GUI, firmware, or documentation specialist files. Do **not** rename Mr. Motion or Mr. Jog.
+**Organizer**, **verifier**, **Mr. Fix-it**, **Mr. Grafix**, **Mr. Motion**, **Mr. Jog**, and **Mr. Probe** exist now. Grafix reports to Fix-it for graphic tickets (not the coordinator). Mr. Motion reports to Fix-it for motion/LS rules (graphics-none). Mr. Jog reports to Fix-it for jog-input obey/ignore (graphics-none; sibling of Motion, not a cascade). Mr. Probe reports to Fix-it for ID/OD probing routines (graphics-none; sibling of Motion and Jog, not a cascade). None is a GUI/firmware specialist; none is a standing employee. Too many specialists is counterproductive. No GUI, firmware, or documentation specialist files. Do **not** rename Mr. Motion, Mr. Jog, or Mr. Probe.
 
 ## Authoritative specs (not in this git tree yet)
 
 Hardware (MKS DLC32 v2.1, TMC2209 V2.0 MKS, NEMA 17, 20T GT2, 3-pin NC probe, series NC limits per axis end, GRBL) and host path (USB laptop ↔ board; WiFi unused; **Python**; **Tkinter as the starting UI default**, not a forever lock): Cursor project store `docs/project-context.md`. Do not invent a different board, probe, limit scheme, or UI toolkit.
 
-Measurement intent and stylus offset math: Cursor project store `docs/probing-routines.md` (3-pin NC digital touch probe; ID increases displayed motion; OD shrinks it). Do not generate probe cycles or change offset math.
+Measurement intent and stylus offset math: Cursor project store `docs/probing-routines.md` (3-pin NC digital touch probe; ID increases displayed motion; OD shrinks it). Protocol table: store `docs/probing-protocol.md`. Owner: **Mr. Probe**. Other agents do not invent sequences (**P4**). OD **requires** approx diameter (**P8**). Do not generate probe cycles without Mike; do not change offset math.
 
 Accuracy/precision (fail-closed, **not** a work-order): Cursor project store `docs/accuracy-gates.md`. Numeric capture/display **±0.002 in**. Visual close needs Mike. Agents do not close iteration-sheet rows. One lock cluster per pass.
 
 Motion / LS / H4 precheck / allowed-jog table: Cursor project store `docs/motion-rules.md` (H4 Mike **OK**; per-axis table, not a 3D graph; **GRBL rides** — do not build what fights `$H` `$J` `?` alarms limits). **Home is a location.** An **LS** is pressed or cleared. Jog-pad **Home** goes to accepted home **0,0,0** (not `$H`). **Initialize** (chip green) auto-starts the homing routine. **Home Machine** is a later re-home. Do **not** write that the jog-pad control starts the homing routine. Owner: **Mr. Motion**.
 
 Jog-input obey/ignore (press / hold / release / reverse / lost-hold): Cursor project store `docs/jog-accept-rules.md`. Owner: **Mr. Jog**. **J5** is one cell. Table **A1–A27 marked** (2026-10-02): **A7 REJECT**, the rest KEEP. Mike columns on that table are **not** still open. Does not own homing, H4, or the per-axis LS table.
+
+ID/OD probing routines (needs, failure modes, conditions, protocol table): Cursor project store `docs/probing-protocol.md`. Owner: **Mr. Probe**. Stylus math: `docs/probing-routines.md`. Sibling of Motion and Jog, not a cascade. Does not recode closed chrome. Does not invent sequences without Mike. Does not import P9 / P10 / P11 / P12.
 
 **Version requirements/test log is in this tree:** [`docs/version-log.md`](version-log.md), current sheet [`docs/iterations/0.2.0.md`](iterations/0.2.0.md). Screenshots, GUI-direction specs, and accuracy gates remain in the store.
 
