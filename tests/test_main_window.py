@@ -110,8 +110,9 @@ def test_save_and_close_exist_bridge_does_not(app: MainWindow) -> None:
     assert "Inner" not in joined
     assert "Outer" not in joined
     assert "Stylus" not in joined
-    assert "FINISH PROBING" not in joined
-    assert "Finish Probing" not in joined
+    captions = " ".join(_operator_captions(app))
+    assert "FINISH PROBING" not in captions
+    assert "Finish Probing" not in captions
 
 
 def test_id_and_od_are_separate_controls(app: MainWindow) -> None:
@@ -131,10 +132,44 @@ def test_goto_and_jog_do_not_move(app: MainWindow) -> None:
     app.click_control("Home")
     app.click_control("Home Machine")
     app.click_control("Save")
+    app.click_control("blank slot")
     app.click_control("Discard Since Last Save")
     app.click_control("Capture Feature")
     app.click_control("New File")
     assert app.position.get_xyz() == before
+
+
+def test_preview_slot_is_blank_unlabeled_placeholder(app: MainWindow) -> None:
+    """Old Finish Probing slot stays; caption and export behavior do not."""
+    from digitizer.chrome import PillButton
+
+    slot = app.controls["blank slot"]
+    discard = app.controls["Discard Since Last Save"]
+    preview = app.controls["DXF Preview"]
+    assert isinstance(slot, PillButton)
+    assert slot._text == ""  # noqa: SLF001
+    assert slot.control_name == ""
+    canvas = next(c for c in slot.winfo_children() if isinstance(c, tk.Canvas))
+    drawn = [
+        str(canvas.itemcget(item, "text"))
+        for item in canvas.find_all()
+        if canvas.type(item) == "text"
+    ]
+    assert all(caption.strip() == "" for caption in drawn), drawn
+    app.update_idletasks()
+    app.update()
+    assert preview.winfo_rooty() < slot.winfo_rooty() < discard.winfo_rooty()
+    assert abs(slot.winfo_rootx() - discard.winfo_rootx()) < 8
+    before_lines = list(app.messages.lines)
+    before_circles = list(app.session.circles)
+    before_xyz = app.position.get_xyz()
+    app.click_control("blank slot")
+    assert app.messages.lines == before_lines
+    assert app.session.circles == before_circles
+    assert app.position.get_xyz() == before_xyz
+    assert "Save" in app.controls
+    assert "Close" in app.controls
+    assert "Capture Feature" in app.controls
 
 
 def test_origins_card_has_home_machine_left_of_set_dxf_origin(app: MainWindow) -> None:
@@ -284,7 +319,7 @@ def test_pill_buttons_fill_canvas_without_side_gutters(app: MainWindow) -> None:
     """Rectangular canvas leftover on left/right of the stadium is the shape bug."""
     from digitizer.chrome import PillButton
 
-    for name in ("New File", "Capture Feature", "Discard Since Last Save", "Initialized", "Y+"):
+    for name in ("New File", "Capture Feature", "blank slot", "Initialized", "Y+"):
         btn = app.controls[name]
         assert isinstance(btn, PillButton)
         canvas = next(c for c in btn.winfo_children() if isinstance(c, tk.Canvas))
@@ -455,4 +490,20 @@ def _widget_texts(widget: tk.Misc) -> list[str]:
         pass
     for child in widget.winfo_children():
         out.extend(_widget_texts(child))
+    return out
+
+
+def _operator_captions(widget: tk.Misc) -> list[str]:
+    """Labels plus canvas-drawn captions (the old Finish Probing text was canvas text)."""
+    out: list[str] = []
+    try:
+        out.append(str(widget.cget("text")))
+    except tk.TclError:
+        pass
+    if isinstance(widget, tk.Canvas):
+        for item in widget.find_all():
+            if widget.type(item) == "text":
+                out.append(str(widget.itemcget(item, "text")))
+    for child in widget.winfo_children():
+        out.extend(_operator_captions(child))
     return out

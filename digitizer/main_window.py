@@ -500,13 +500,18 @@ class MainWindow(tk.Tk):
         self.preview.pack(fill="both", expand=True)
         self._remember("DXF Preview", preview_card)
 
-        # Toolbar Save writes the file/DXF (K9/P3). No second finish button.
+        # Same slot as the old Finish Probing control: unlabeled placeholder.
+        # No caption, no action, no DXF write. Toolbar Save writes the file/DXF.
+        blank = PillButton(parent, "", lambda _name: None, pady=8)
+        blank.grid(row=1, column=0, sticky="ew", pady=(0, 6))
+        self._remember("blank slot", blank)
+
         discard = PillButton(parent, "Discard Since Last Save", self.log, pady=8)
-        discard.grid(row=1, column=0, sticky="ew", pady=(0, 8))
+        discard.grid(row=2, column=0, sticky="ew", pady=(0, 8))
         self._remember("Discard Since Last Save", discard)
 
         msg_card = TealCard(parent, "Messages", logger=self.log)
-        msg_card.grid(row=2, column=0, sticky="ew")
+        msg_card.grid(row=3, column=0, sticky="ew")
         self.messages = MessageLog(msg_card.body)
         self.messages.pack(fill="both", expand=True)
         self.messages.append("Paralyzed GUI — clicks log here. No GRBL, USB, motion, or file I/O.")
